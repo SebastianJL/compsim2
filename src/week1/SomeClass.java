@@ -1,6 +1,6 @@
 package week1;
 
-public class Test {
+public class SomeClass {
     public static void main(String[] args) {
         System.out.println("HelloWorld");
     }
