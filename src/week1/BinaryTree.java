@@ -1,38 +1,54 @@
 package week1;
 
 import utils.IO;
+import utils.Array;
+
+import java.util.Random;
 
 public class BinaryTree {
 
+    private Node root = new Node(3);
 
     public static void main(String[] args) {
         BinaryTree tree = new BinaryTree();
-        double[][] a = new double[][]{{5, 5}, {1, 4}, {4, 3}, {3, 2}, {4, 1}};
-        tree.quicksort(a, 0, a.length-1);
-        IO.print(a);
+        Random randomGenerator = new Random();
+        randomGenerator.setSeed(randomGenerator.nextInt());
+        Particle[] particles = new Particle[5];
+        for (int i=0; i<particles.length; i++) {
+            particles[i] = new Particle(3, randomGenerator);
+        }
+        int i = tree.partition(particles, 0, particles.length-1,0.5, 0);
         IO.print("hello");
+        IO.print(particles);
+        IO.print(i);
     }
 
-    private int partition(double[][] data, int lo, int hi, double pivot, int dimension) {
-        int i = lo - 1;
-        int j = hi + 1;
-        int index = dimension-1;
+    private int partition(Particle[] particles, int lo, int hi, double pivot, int index) {
+        int i = lo;
+        int j = hi;
         while (true) {
-            while (data[++i][index] < pivot && i < j);
-            while (data[--j][index] > pivot && j > i);
+            while (i <= hi && particles[i].position(index) < pivot) i++;
+            while (j >= lo && particles[j].position(index) > pivot) j--;
             if (i >= j) {
-                return j;
+                return i;
             }
-            swap(data, i, j, index);
+            Array.swap(particles, i, j);
         }
     }
 
-    private void swap(double[][] a, int i, int j, int index) {
-        double[] tmp = a[i];
-        a[i] = a[j];
-        a[j] = tmp;
+    class Node {
+        private double posMin[], posMax[];
+        private int start, end;
+        private Node lChild, rChild;
+
+        Node(int dimension) {
+            this.posMax = new double[dimension-1];
+            this.posMin = new double[dimension-1];
+        }
+
+        boolean isLeaf() {
+            return start-end <= 8;
+        }
     }
-
-
 }
 
