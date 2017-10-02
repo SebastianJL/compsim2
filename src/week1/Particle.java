@@ -40,7 +40,6 @@ public class Particle {
         double y = position(1) * scale;
         int width = size;
         int height = size;
-        g.drawRect((int)x, (int)y, (int)width, (int)height);
+        g.drawRect((int) x, (int) y, (int) width, (int) height);
     }
-
 }
