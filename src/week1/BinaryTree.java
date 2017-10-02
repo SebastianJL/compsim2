@@ -81,38 +81,6 @@ public class BinaryTree {
         return particles[0].dimensions();
     }
 
-    private ArrayList<Node> linearise() {
-        int maxSize = 100000;
-        ArrayList<Node> linearTree = new ArrayList<>(maxSize);
-        for (int i = 0; i < maxSize; i++) {
-            linearTree.add(null);
-        }
-        root.linearise(linearTree, 0);
-        return linearTree;
-    }
-
-    public String toString() {
-        ArrayList<Node> linearTree = linearise();
-        StringBuilder sb = new StringBuilder();
-        int pow = 0;
-        int dim = 0;
-        for (int i = 0; i < linearTree.size(); i++) {
-            Node node = linearTree.get(i);
-            if (Math.pow(2, pow) - 1 == i) {
-                sb.append('\n').append(dim).append(": ");
-                pow += 1;
-                dim = ++dim % dimensions();
-            }
-            if (node != null) {
-                sb.append(node.start).append(", ").append(node.end);
-            } else {
-                sb.append("____");
-            }
-            sb.append(" | ");
-        }
-        return sb.toString();
-    }
-
     void paint(Graphics g, Rectangle bounds) {
         double max = 0;
         for (int i = 0; i < root.posMin.length; i++) {
@@ -155,17 +123,6 @@ public class BinaryTree {
 
         boolean hasRight() {
             return rChild != null;
-        }
-
-        void linearise(ArrayList<Node> linearTree, int index) {
-            linearTree.set(index, this);
-            if (hasLeft()) {
-                lChild.linearise(linearTree, index * 2 + 1);
-            }
-            if (hasRight()) {
-                rChild.linearise(linearTree, index * 2 + 2);
-            }
-            return;
         }
 
         void paint(Graphics g, double scale) {
