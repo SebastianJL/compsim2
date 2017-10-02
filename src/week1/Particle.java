@@ -9,7 +9,7 @@ public class Particle {
 
     Particle(int dimensions, Random randomGenerator) {
         this.position = new double[dimensions];
-        for (int i = 0; i< position.length; i++) {
+        for (int i = 0; i < position.length; i++) {
             position[i] = randomGenerator.nextDouble();
         }
     }
