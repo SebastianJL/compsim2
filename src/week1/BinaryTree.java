@@ -4,9 +4,7 @@ import utils.IO;
 import utils.Array;
 
 import java.awt.*;
-import java.sql.Struct;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class BinaryTree {
@@ -28,7 +26,7 @@ public class BinaryTree {
             posMin[i] = 0;
             posMax[i] = 1;
         }
-        root = new Node(posMin, posMax, 0, particles.length-1, null, 0);
+        root = new Node(posMin, posMax, 0, particles.length-1, null);
         buildTree(0, root);
     }
 
@@ -70,11 +68,11 @@ public class BinaryTree {
 
         // Recurse
         if (lend - lstart >= 0) {
-            currentNode.lChild = new Node(lPosMin, lPosMax, lstart, lend, currentNode, nextDimension);
+            currentNode.lChild = new Node(lPosMin, lPosMax, lstart, lend, currentNode);
             buildTree(nextDimension, currentNode.lChild);
         }
         if (rend - rstart >= 0) {
-            currentNode.rChild = new Node(rPosMin, rPosMax, rstart, rend, currentNode, nextDimension);
+            currentNode.rChild = new Node(rPosMin, rPosMax, rstart, rend, currentNode);
             buildTree(nextDimension, currentNode.rChild);
         }
 
@@ -135,16 +133,14 @@ public class BinaryTree {
         int start, end;
         Node lChild, rChild;
         Node parent;
-        int dimension;
 
-        Node(double[] posMin, double[] posMax, int start, int end, Node parent, int dimension) {
+        Node(double[] posMin, double[] posMax, int start, int end, Node parent) {
             assert posMax.length==posMin.length;
             this.posMin = posMin;
             this.posMax = posMax;
             this.start = start;
             this.end = end;
             this.parent = parent;
-            this.dimension = dimension;
         }
 
         boolean isLeftChild() {
