@@ -14,8 +14,12 @@ public class BinaryTree {
     private Particle[] particles;
 
     public static void main(String[] args) {
-        BinaryTree tree = new BinaryTree(3, 5);
+        BinaryTree tree = new BinaryTree(2, 20);
+        IO.print(tree.root.start + ", " + tree.root.end);
+        IO.print(tree.root.lChild.start + ", " + tree.root.lChild.end);
+        IO.print(tree.root.rChild.start + ", " + tree.root.rChild.end);
         IO.print(tree);
+
     }
 
     BinaryTree(int dimensions, int nparticles) {
@@ -23,8 +27,15 @@ public class BinaryTree {
         randomGenerator.setSeed(randomGenerator.nextInt());
         particles = new Particle[nparticles];
         for (int i=0; i<particles.length; i++) {
-            particles[i] = new Particle(3, randomGenerator);
+            particles[i] = new Particle(dimensions, randomGenerator);
         }
+        double[] posMin = new double[dimensions];
+        double[] posMax = new double[dimensions];
+        for (int i=0; i<dimensions; i++) {
+            posMin[i] = 0;
+            posMax[i] = 1;
+        }
+        root = new Node(posMin, posMax, 0, particles.length-1, null, 0);
         buildTree(0, root);
     }
 
@@ -41,34 +52,39 @@ public class BinaryTree {
         }
     }
 
-    private void buildTree(int index, Node currentNode) {
-        if (currentNode.end - currentNode.end <= 8) {
+    private void buildTree(int dimension, Node currentNode) {
+        if (currentNode.end - currentNode.start <= 8) {
             return;
         }
 
-        double pivot = (currentNode.posMax[index] - currentNode.posMin[index]) / 2;
-        int i = partition(particles, 0, particles.length-1, pivot, index);
+        double pivot = (currentNode.posMax[dimension] + currentNode.posMin[dimension]) / 2;
+        int i = partition(particles, currentNode.start, currentNode.end, pivot, dimension);
+        int nextDimension = (dimension+1) % dimensions();
 
-        // Instantiate left node
+        // Set left node parameters
         double[] lPosMin = currentNode.posMin.clone();
         double[] lPosMax = currentNode.posMax.clone();
-        lPosMax[index] = pivot;
+        lPosMax[dimension] = pivot;
         int lstart = currentNode.start;
         int lend = i-1;
-        currentNode.lChild = new Node(lPosMin, lPosMax, lstart, lend, currentNode);
 
-        // Instantiate right node
+        // Set right node parameters
         double[] rPosMin = currentNode.posMin.clone();
         double[] rPosMax = currentNode.posMax.clone();
-        rPosMin[index] = pivot;
+        rPosMin[dimension] = pivot;
         int rstart = i;
         int rend = currentNode.end;
-        currentNode.rChild = new Node(rPosMin, rPosMax, rstart, rend, currentNode);
 
         // Recurse
-        int nextIndex = ++index % dimensions();
-        buildTree(nextIndex, currentNode.lChild);
-        buildTree(nextIndex, currentNode.rChild);
+        if (lend - lstart >= 0) {
+            currentNode.lChild = new Node(lPosMin, lPosMax, lstart, lend, currentNode, nextDimension);
+            buildTree(nextDimension, currentNode.lChild);
+        }
+        if (rend - rstart >= 0) {
+            currentNode.rChild = new Node(rPosMin, rPosMax, rstart, rend, currentNode, nextDimension);
+            buildTree(nextDimension, currentNode.rChild);
+        }
+
     }
 
     private int dimensions() {
@@ -76,7 +92,11 @@ public class BinaryTree {
     }
 
     private ArrayList<Node> linearise() {
-        ArrayList<Node> linearTree = new ArrayList<>();
+        int maxSize = 100000;
+        ArrayList<Node> linearTree = new ArrayList<>(maxSize);
+        for (int i=0; i<maxSize; i++) {
+            linearTree.add(null);
+        }
         root.linearise(linearTree, 0);
         return linearTree;
     }
@@ -85,14 +105,21 @@ public class BinaryTree {
         ArrayList<Node> linearTree = linearise();
         StringBuilder sb = new StringBuilder();
         int pow = 0;
+        int dim = 0;
         for (int i=0; i<linearTree.size(); i++) {
-            if (Math.pow(2, pow)-1 == i) {
-                sb.append('\n');
-            }
             Node node = linearTree.get(i);
-            sb.append(IO.toString(particles, node.start, node.end));
+            if (Math.pow(2, pow)-1 == i) {
+                sb.append('\n').append(dim).append(": ");
+                pow += 1;
+                dim = ++dim % dimensions();
+            }
+            if (node != null) {
+                sb.append(node.start).append(", ").append(node.end);
+            }
+            else {
+                sb.append("____");
+            }
             sb.append(" | ");
-            pow += 1;
         }
         return sb.toString();
     }
@@ -102,14 +129,16 @@ public class BinaryTree {
         private int start, end;
         private Node lChild, rChild;
         private Node parent;
+        private int dimension;
 
-        Node(double[] posMin, double[] posMax, int start, int end, Node parent) {
+        Node(double[] posMin, double[] posMax, int start, int end, Node parent, int dimension) {
             assert posMax.length==posMin.length;
             this.posMin = posMin;
             this.posMax = posMax;
             this.start = start;
             this.end = end;
             this.parent = parent;
+            this.dimension = dimension;
         }
 
         boolean isLeftChild() {
