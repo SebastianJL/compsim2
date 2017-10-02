@@ -3,6 +3,7 @@ package week1;
 import utils.IO;
 import utils.Array;
 
+import java.awt.*;
 import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,21 +11,13 @@ import java.util.Random;
 
 public class BinaryTree {
 
-    private Node root;
+    Node root;
     private Particle[] particles;
 
-    public static void main(String[] args) {
-        BinaryTree tree = new BinaryTree(2, 20);
-        IO.print(tree.root.start + ", " + tree.root.end);
-        IO.print(tree.root.lChild.start + ", " + tree.root.lChild.end);
-        IO.print(tree.root.rChild.start + ", " + tree.root.rChild.end);
-        IO.print(tree);
-
-    }
 
     BinaryTree(int dimensions, int nparticles) {
         Random randomGenerator = new Random();
-        randomGenerator.setSeed(randomGenerator.nextInt());
+        randomGenerator.setSeed(10);
         particles = new Particle[nparticles];
         for (int i=0; i<particles.length; i++) {
             particles[i] = new Particle(dimensions, randomGenerator);
@@ -53,7 +46,7 @@ public class BinaryTree {
     }
 
     private void buildTree(int dimension, Node currentNode) {
-        if (currentNode.end - currentNode.start <= 8) {
+        if (currentNode.end - currentNode.start < 8) {
             return;
         }
 
@@ -124,12 +117,25 @@ public class BinaryTree {
         return sb.toString();
     }
 
+    void paint(Graphics g, Rectangle bounds) {
+        double max = 0;
+        for (int i=0; i<root.posMin.length; i++) {
+            max = Math.max(root.posMax[i] - root.posMin[i], max);
+        }
+        double scale = Math.min(bounds.width, bounds.height) / max;
+        root.paint(g, scale);
+        g.setColor(Color.BLUE);
+//        for (Particle particle : particles) {
+//            particle.paint(g, scale, 3);
+//        }
+    }
+
     class Node {
-        private double[] posMin, posMax;
-        private int start, end;
-        private Node lChild, rChild;
-        private Node parent;
-        private int dimension;
+        double[] posMin, posMax;
+        int start, end;
+        Node lChild, rChild;
+        Node parent;
+        int dimension;
 
         Node(double[] posMin, double[] posMax, int start, int end, Node parent, int dimension) {
             assert posMax.length==posMin.length;
@@ -166,6 +172,32 @@ public class BinaryTree {
                 rChild.linearise(linearTree, index*2 + 2);
             }
             return;
+        }
+
+        void paint(Graphics g, double scale) {
+            if (!isLeaf()) {
+                if (hasLeft()) {
+                    lChild.paint(g, scale);
+                }
+                if (hasRight()) {
+                    rChild.paint(g, scale);
+                }
+            }
+            else {
+                double x = posMin[0] * scale;
+                double y = posMin[1] * scale;
+                double width = (posMax[0] - posMin[0]) * scale;
+                double height = (posMax[1] - posMin[1]) * scale;
+                int randomColor0 = (int)(Math.random() * 255);
+                int randomColor1 = (int)(Math.random() * 255);
+                int randomColor2 = (int)(Math.random() * 255);
+                g.setColor(Color.BLACK);
+                g.drawRect((int)x, (int)y, (int)width, (int)height);
+                g.setColor(new Color(randomColor0, randomColor1, randomColor2));
+                for (int i=start; i<=end; i++) {
+                    particles[i].paint(g, scale, 6);
+                }
+            }
         }
 
     }
