@@ -7,8 +7,8 @@ import java.util.Random;
 public class Particle {
     private double[] position;
 
-    Particle(int dimension, Random randomGenerator) {
-        this.position = new double[dimension];
+    Particle(int dimensions, Random randomGenerator) {
+        this.position = new double[dimensions];
         for (int i = 0; i< position.length; i++) {
             position[i] = randomGenerator.nextDouble();
         }
@@ -18,7 +18,7 @@ public class Particle {
         this.position = coords;
     }
 
-    public int dimension() {
+    public int dimensions() {
         return position.length;
     }
 
