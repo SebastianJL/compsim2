@@ -2,6 +2,7 @@ package week1;
 
 import utils.IO;
 
+import java.awt.*;
 import java.util.Random;
 
 public class Particle {
@@ -32,6 +33,14 @@ public class Particle {
 
     public String toString() {
         return IO.toString(position);
+    }
+
+    public void paint(Graphics g, double scale, int size) {
+        double x = position(0) * scale;
+        double y = position(1) * scale;
+        int width = size;
+        int height = size;
+        g.drawRect((int)x, (int)y, (int)width, (int)height);
     }
 
 }
