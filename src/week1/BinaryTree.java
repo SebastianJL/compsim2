@@ -3,14 +3,12 @@ package week1;
 import utils.Array;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class BinaryTree {
 
     Node root;
     private Particle[] particles;
-
 
     BinaryTree(int dimensions, int nparticles) {
         Random randomGenerator = new Random();
@@ -74,7 +72,6 @@ public class BinaryTree {
             currentNode.rChild = new Node(rPosMin, rPosMax, rstart, rend, currentNode);
             buildTree(nextDimension, currentNode.rChild);
         }
-
     }
 
     private int dimensions() {
@@ -126,26 +123,24 @@ public class BinaryTree {
         }
 
         void paint(Graphics g, double scale) {
-            if (!isLeaf()) {
+            if (isLeaf()) {
+                double x = posMin[0] * scale;
+                double y = posMin[1] * scale;
+                double width = (posMax[0] - posMin[0]) * scale;
+                double height = (posMax[1] - posMin[1]) * scale;
+                g.setColor(Color.BLACK);
+                g.drawRect((int) x, (int) y, (int) width, (int) height);
+                Random rand = new Random();
+                g.setColor(new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()));
+                for (int i = start; i <= end; i++) {
+                    particles[i].paint(g, scale, 6);
+                }
+            } else {
                 if (hasLeft()) {
                     lChild.paint(g, scale);
                 }
                 if (hasRight()) {
                     rChild.paint(g, scale);
-                }
-            } else {
-                double x = posMin[0] * scale;
-                double y = posMin[1] * scale;
-                double width = (posMax[0] - posMin[0]) * scale;
-                double height = (posMax[1] - posMin[1]) * scale;
-                int randomColor0 = (int) (Math.random() * 255);
-                int randomColor1 = (int) (Math.random() * 255);
-                int randomColor2 = (int) (Math.random() * 255);
-                g.setColor(Color.BLACK);
-                g.drawRect((int) x, (int) y, (int) width, (int) height);
-                g.setColor(new Color(randomColor0, randomColor1, randomColor2));
-                for (int i = start; i <= end; i++) {
-                    particles[i].paint(g, scale, 6);
                 }
             }
         }
