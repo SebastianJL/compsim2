@@ -1,5 +1,7 @@
 package week1;
 
+import utils.IO;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -21,12 +23,16 @@ public class GiantGalaxy extends JPanel {
     }
 
     public void run() {
-        tree = new BinaryTree(2, 200);
+        tree = new BinaryTree(2, 80);
 //        IO.print(tree.root.start + ", " + tree.root.end);
 //        IO.print(tree.root.lChild.start + ", " + tree.root.lChild.end);
 //        IO.print(tree.root.rChild.start + ", " + tree.root.rChild.end);
 //        IO.print(tree);
         repaint();
+        int count = tree.ballwalk( new double[]{0.5,0.5}, 0.25);
+
+        IO.print(count);
+
     }
 
 
@@ -41,6 +47,7 @@ public class GiantGalaxy extends JPanel {
 //        g.fillRect();
         g.setColor(Color.BLACK);
         tree.paint(g, bounds);
+        g.drawOval();
 
 
     }

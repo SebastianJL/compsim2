@@ -111,6 +111,11 @@ public class BinaryTree {
 //        }
     }
 
+    int ballwalk(double[] pos, double rMax) {
+        return root.ballwalk(pos, Math.pow(rMax, 2));
+    }
+
+
     /**
      * Basic Container for the BinaryTree.
      */
@@ -118,7 +123,7 @@ public class BinaryTree {
         /**
          *
          */
-        double[] posMin, posMax;
+        double[] posMin, posMax, center;
         int start, end;
         Node lChild, rChild;
         Node parent;
@@ -130,6 +135,10 @@ public class BinaryTree {
             this.start = start;
             this.end = end;
             this.parent = parent;
+//            this.center = new double[posMax.length];
+//            for (int i = 0; i <= center.length; i++){
+//                center[i] = (posMin[i] + posMax[i]) / 2;
+//            }
         }
 
         boolean isLeftChild() {
@@ -146,6 +155,39 @@ public class BinaryTree {
 
         boolean hasRight() {
             return rChild != null;
+        }
+
+        double dist2(double[] pos){
+            double dist2 = 0;
+            for (int i = 0; i < pos.length; i++){
+                if (pos[i] < posMin[i])
+                    {dist2 += Math.pow(posMin[i] - pos[i], 2); }
+                else if (pos[i] > posMax[i])
+                    {dist2 += Math.pow(posMax[i] - pos[i], 2); }
+                else
+                    {dist2 += 0; }
+            }
+            return dist2;
+        }
+
+        int ballwalk(double[] pos, double r2max) {
+            int cnt = 0;
+            if (isLeaf()) {
+                for (int j = start; j <= end; j++){
+                    if (particles[j].dist2(pos) < r2max){
+                        cnt++;
+                    }
+                }
+            }
+            else {
+                if (lChild.dist2(pos) < r2max){
+                    cnt += lChild.ballwalk(pos, r2max);
+                }
+                if (rChild.dist2(pos) < r2max){
+                    cnt += rChild.ballwalk(pos, r2max);
+                }
+            }
+            return cnt;
         }
 
         void paint(Graphics g, double scale) {

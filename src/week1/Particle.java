@@ -42,4 +42,12 @@ public class Particle {
         int height = size;
         g.drawRect((int) x, (int) y, (int) width, (int) height);
     }
+
+    double dist2(double[] pos){
+        double dist2 = 0;
+        for (int i = 0; i < dimensions(); i++){
+            dist2 += Math.pow((pos[i] - position[i]) , 2);
+        }
+        return dist2;
+    }
 }
