@@ -1,5 +1,6 @@
 package week1;
 
+import utils.Drawing;
 import utils.IO;
 
 import javax.swing.*;
@@ -54,7 +55,8 @@ public class GiantGalaxy extends JPanel {
 //        g.fillRect();
         g.setColor(Color.BLACK);
         tree.paint(g, scale);
-//        g.drawOval(0.25,0.25, 0.5, 0.5);
+        int[] vals = Drawing.scale(scale, 0.25, 0.5);
+        g.drawOval(vals[0], vals[0], vals[1], vals[1]);
 
 
     }
