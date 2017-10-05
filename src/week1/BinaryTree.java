@@ -27,12 +27,22 @@ public class BinaryTree {
         buildTree(0, root);
     }
 
-    private int partition(Particle[] particles, int lo, int hi, double pivot, int index) {
+    /**
+     * Partitions the particle array.
+     * @after particles[lo<=x<i] < pivot && particles[i<=x<=hi] >= pivot
+     * @param particles Array of particles.
+     * @param lo Lower index of partition.
+     * @param hi Higher index of partition.
+     * @param pivot Value to sort particles by. (All lower ones and all higher ones.)
+     * @param dimension Dimension (0, 1, 2, ...) to partition by.
+     * @return index i such that the after condition is fulfilled.
+     */
+    private int partition(Particle[] particles, int lo, int hi, double pivot, int dimension) {
         int i = lo;
         int j = hi;
         while (true) {
-            while (i <= hi && particles[i].position(index) < pivot) i++;
-            while (j >= lo && particles[j].position(index) > pivot) j--;
+            while (i <= hi && particles[i].position(dimension) < pivot) i++;
+            while (j >= lo && particles[j].position(dimension) > pivot) j--;
             if (i >= j) {
                 return i;
             }
@@ -40,6 +50,11 @@ public class BinaryTree {
         }
     }
 
+    /**
+     * Recursivly builds the BinaryTree with Nodes based on particles.
+     * @param dimension Indicates the dimension at which to partition at this level of the recursion.
+     * @param currentNode
+     */
     private void buildTree(int dimension, Node currentNode) {
         if (currentNode.end - currentNode.start < 8) {
             return;
@@ -78,6 +93,11 @@ public class BinaryTree {
         return particles[0].dimensions();
     }
 
+    /**
+     * Paint the tree.
+     * @param g Graphic from JPanel in which to paint.
+     * @param bounds Bounds of the window.
+     */
     void paint(Graphics g, Rectangle bounds) {
         double max = 0;
         for (int i = 0; i < root.posMin.length; i++) {
@@ -91,7 +111,13 @@ public class BinaryTree {
 //        }
     }
 
+    /**
+     * Basic Container for the BinaryTree.
+     */
     class Node {
+        /**
+         *
+         */
         double[] posMin, posMax;
         int start, end;
         Node lChild, rChild;
