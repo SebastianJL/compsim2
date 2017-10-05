@@ -93,17 +93,27 @@ public class BinaryTree {
         return particles[0].dimensions();
     }
 
+
+    public double[] posMin() {
+        return root.posMin.clone();
+    }
+    public double posMin(int index) {
+        return root.posMin[index];
+    }
+
+    public double[] posMax() {
+        return root.posMax.clone();
+    }
+    public double posMax(int index) {
+        return root.posMax[index];
+    }
+
     /**
      * Paint the tree.
      * @param g Graphic from JPanel in which to paint.
-     * @param bounds Bounds of the window.
+     * @param scale Scale for drawing.
      */
-    void paint(Graphics g, Rectangle bounds) {
-        double max = 0;
-        for (int i = 0; i < root.posMin.length; i++) {
-            max = Math.max(root.posMax[i] - root.posMin[i], max);
-        }
-        double scale = Math.min(bounds.width, bounds.height) / max;
+    void paint(Graphics g, double scale) {
         root.paint(g, scale);
         g.setColor(Color.BLUE);
 //        for (Particle particle : particles) {

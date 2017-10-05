@@ -29,7 +29,7 @@ public class GiantGalaxy extends JPanel {
 //        IO.print(tree.root.rChild.start + ", " + tree.root.rChild.end);
 //        IO.print(tree);
         repaint();
-        int count = tree.ballwalk( new double[]{0.5,0.5}, 0.25);
+        int count = tree.ballwalk(new double[]{0.5,0.5}, 0.25);
 
         IO.print(count);
 
@@ -39,15 +39,22 @@ public class GiantGalaxy extends JPanel {
     public void paint(Graphics g) {
         Rectangle bounds = getBounds();
 
-        //clear window and draw background
+        // Calculate scale
+        double max = 0;
+        for (int i = 0; i < tree.posMin().length; i++) {
+            max = Math.max(tree.posMax(i) - tree.posMin(i), max);
+        }
+        double scale = Math.min(bounds.width, bounds.height) / max;
+
+        // Clear window and draw background
         g.setColor(Color.WHITE);
         paintComponent(g);
         g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
 //        g.drawLine((int) x3D[i] ,(int) y3D[i],  x3D[i+1] ,(int) y3D[i+1]);
 //        g.fillRect();
         g.setColor(Color.BLACK);
-        tree.paint(g, bounds);
-        g.drawOval();
+        tree.paint(g, scale);
+//        g.drawOval(0.25,0.25, 0.5, 0.5);
 
 
     }
