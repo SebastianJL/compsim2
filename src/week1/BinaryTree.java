@@ -116,9 +116,6 @@ public class BinaryTree {
     void paint(Graphics g, double scale) {
         root.paint(g, scale);
         g.setColor(Color.BLUE);
-//        for (Particle particle : particles) {
-//            particle.paint(g, scale, 3);
-//        }
     }
 
     int ballwalk(double[] pos, double rMax) {
@@ -145,10 +142,6 @@ public class BinaryTree {
             this.start = start;
             this.end = end;
             this.parent = parent;
-//            this.center = new double[posMax.length];
-//            for (int i = 0; i <= center.length; i++){
-//                center[i] = (posMin[i] + posMax[i]) / 2;
-//            }
         }
 
         boolean isLeftChild() {
@@ -211,7 +204,7 @@ public class BinaryTree {
                 Random rand = new Random();
                 g.setColor(new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()));
                 for (int i = start; i <= end; i++) {
-                    particles[i].paint(g, scale, 6);
+                    particles[i].paint(g, scale, 3);
                 }
             } else {
                 if (hasLeft()) {
