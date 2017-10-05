@@ -24,7 +24,7 @@ public class Particle {
     }
 
     public double[] position() {
-        return position;
+        return position.clone();
     }
 
     public double position(int i) {
