@@ -12,6 +12,7 @@ public class BinaryTree {
     public int swaps = 0;
     public int comparisons = 0;
     public int partitions = 0;
+    public int operations = 0;
 
     BinaryTree(int dimensions, int nparticles, Random randomGenerator) {
         particles = new Particle[nparticles];
@@ -43,8 +44,8 @@ public class BinaryTree {
         int i = lo;
         int j = hi;
         while (true) { comparisons++;
-            while (i <= hi && particles[i].position(dimension) < pivot) i++; comparisons += 2;
-            while (j >= lo && particles[j].position(dimension) > pivot) j--; comparisons += 2;
+            while (i <= hi && particles[i].position(dimension) < pivot) i++; comparisons += 2; operations++;
+            while (j >= lo && particles[j].position(dimension) > pivot) j--; comparisons += 2; operations++;
             if (i >= j) { comparisons++;
                 return i;
             }
