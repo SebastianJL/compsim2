@@ -10,14 +10,14 @@ import java.util.Random;
 public class GiantGalaxy extends JPanel {
 
     private static final long serialVersionUID = 1L;  //used for JPanel
-    BinaryTree tree;
-    double[] ballwalkCenter = new double[]{0.75, 0.25};
-    double rMax = 0.1;
+    private BinaryTree tree;
+    private double[] ballwalkCenter = new double[]{0.75, 0.25};
+    private double rMax = 0.1;
 
     public static void main(String[] argv) {
         GiantGalaxy galaxy = new GiantGalaxy();
         JFrame top = new JFrame("Galaxy");
-        top.setBounds(00, 00, 900, 900);
+        top.setBounds(0, 0, 900, 900);
         top.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         top.getContentPane().add(galaxy);
         top.setVisible(true);
@@ -26,13 +26,13 @@ public class GiantGalaxy extends JPanel {
         galaxy.run();
     }
 
-    public void run() {
+    private void run() {
         Random randomGenerator = new Random();
         randomGenerator.setSeed(10);
         tree = new BinaryTree(2, 80, randomGenerator);
         repaint();
-        int count = tree.ballwalk(ballwalkCenter, rMax);
-        IO.print(count);
+        int nParticlesInRMax = tree.ballwalk(ballwalkCenter, rMax);
+        IO.print(nParticlesInRMax);
 
     }
 
@@ -52,15 +52,9 @@ public class GiantGalaxy extends JPanel {
         tree.paint(g, scale);
 
         // Draw circle for ballwalk.
-        double[] widths = new double[]{2*rMax, 2*rMax};
-        double[] centeredPosition = Drawing.center(ballwalkCenter, widths);
-        int[] scaledPosition = Drawing.scaleValues(scale, centeredPosition);
-        int[] scaledWidths = Drawing.scaleValues(scale, widths);
-        g.drawOval(scaledPosition[0], scaledPosition[1], scaledWidths[1], scaledWidths[1]);
-
-
+        int[] scaledValues = Drawing.transform(ballwalkCenter[0], ballwalkCenter[1], 2*rMax, 2*rMax, scale);
+        g.drawOval(scaledValues[0], scaledValues[1], scaledValues[2], scaledValues[3]);
     }
-
 }
 
  
