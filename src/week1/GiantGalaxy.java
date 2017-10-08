@@ -5,6 +5,7 @@ import utils.IO;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 public class GiantGalaxy extends JPanel {
 
@@ -26,7 +27,9 @@ public class GiantGalaxy extends JPanel {
     }
 
     public void run() {
-        tree = new BinaryTree(2, 80);
+        Random randomGenerator = new Random();
+        randomGenerator.setSeed(10);
+        tree = new BinaryTree(2, 80, randomGenerator);
         repaint();
         int count = tree.ballwalk(ballwalkCenter, rMax);
         IO.print(count);
