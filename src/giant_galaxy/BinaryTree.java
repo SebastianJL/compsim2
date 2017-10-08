@@ -1,4 +1,4 @@
-package week1;
+package giant_galaxy;
 
 import utils.Array;
 
