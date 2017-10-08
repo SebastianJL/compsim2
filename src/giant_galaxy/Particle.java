@@ -19,7 +19,7 @@ class Particle {
         this.position = coordinates;
     }
 
-    public int dimensions() {
+    int dimensions() {
         return position.length;
     }
 
@@ -27,7 +27,7 @@ class Particle {
         return position.clone();
     }
 
-    public double position(int i) {
+    double position(int i) {
         return position[i];
     }
 
@@ -35,10 +35,10 @@ class Particle {
         return IO.toString(position);
     }
 
-    public void paint(Graphics g, double scale, int size) {
+    void paint(Graphics g, double scale, int size) {
         double x = position(0) * scale;
         double y = position(1) * scale;
-        g.drawRect((int) x, (int) y, (int) size, (int) size);
+        g.drawRect((int) x, (int) y, size, size);
     }
 
     double dist2(double[] pos){

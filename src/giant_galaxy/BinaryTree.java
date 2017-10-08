@@ -9,10 +9,10 @@ class BinaryTree {
 
     private final Node root;
     private final Particle[] particles;
-    public int swaps = 0;
-    public int comparisons = 0;
-    public int partitions = 0;
-    public int operations = 0;
+    int swaps = 0;
+    int comparisons = 0;
+    int partitions = 0;
+    int operations = 0;
 
     BinaryTree(int dimensions, int nParticles, Random randomGenerator) {
         particles = new Particle[nParticles];
@@ -31,7 +31,7 @@ class BinaryTree {
 
     /**
      * Partitions the particle array.
-     * @after particles[lo<=x<i] < pivot && particles[i<=x<=hi] >= pivot
+     * @post particles[lo<=x<i] < pivot && particles[i<=x<=hi] >= pivot
      * @param particles Array of particles.
      * @param lo Lower index of partition.
      * @param hi Higher index of partition.
@@ -56,8 +56,9 @@ class BinaryTree {
     /**
      * Recursively builds the BinaryTree with Nodes based on particles.
      * @param dimension Indicates the dimension at which to partition at this level of the recursion.
-     * @param currentNode
+     * @param currentNode Node on which the algorithm currently acts upon.
      */
+    @SuppressWarnings("UnnecessaryLocalVariable")
     private void buildTree(int dimension, Node currentNode) {
         if (currentNode.end - currentNode.start < 8) {
             return;
@@ -97,17 +98,17 @@ class BinaryTree {
     }
 
 
-    public double[] posMin() {
+    double[] posMin() {
         return root.posMin.clone();
     }
-    public double posMin(int index) {
+    double posMin(int index) {
         return root.posMin[index];
     }
 
-    public double[] posMax() {
+    double[] posMax() {
         return root.posMax.clone();
     }
-    public double posMax(int index) {
+    double posMax(int index) {
         return root.posMax[index];
     }
 
