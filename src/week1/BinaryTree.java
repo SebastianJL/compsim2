@@ -9,10 +9,11 @@ public class BinaryTree {
 
     Node root;
     private Particle[] particles;
+    public int swaps = 0;
+    public int comparisons = 0;
+    public int partitions = 0;
 
-    BinaryTree(int dimensions, int nparticles) {
-        Random randomGenerator = new Random();
-        randomGenerator.setSeed(10);
+    BinaryTree(int dimensions, int nparticles, Random randomGenerator) {
         particles = new Particle[nparticles];
         for (int i = 0; i < particles.length; i++) {
             particles[i] = new Particle(dimensions, randomGenerator);
@@ -38,15 +39,16 @@ public class BinaryTree {
      * @return index i such that the after condition is fulfilled.
      */
     private int partition(Particle[] particles, int lo, int hi, double pivot, int dimension) {
+        partitions++;
         int i = lo;
         int j = hi;
-        while (true) {
-            while (i <= hi && particles[i].position(dimension) < pivot) i++;
-            while (j >= lo && particles[j].position(dimension) > pivot) j--;
-            if (i >= j) {
+        while (true) { comparisons++;
+            while (i <= hi && particles[i].position(dimension) < pivot) i++; comparisons += 2;
+            while (j >= lo && particles[j].position(dimension) > pivot) j--; comparisons += 2;
+            if (i >= j) { comparisons++;
                 return i;
             }
-            Array.swap(particles, i, j);
+            Array.swap(particles, i, j); swaps++;
         }
     }
 
