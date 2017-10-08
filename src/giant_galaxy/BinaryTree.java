@@ -5,10 +5,10 @@ import utils.Array;
 import java.awt.*;
 import java.util.Random;
 
-public class BinaryTree {
+class BinaryTree {
 
-    Node root;
-    private Particle[] particles;
+    private final Node root;
+    private final Particle[] particles;
     public int swaps = 0;
     public int comparisons = 0;
     public int partitions = 0;

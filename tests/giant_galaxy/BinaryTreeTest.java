@@ -4,7 +4,7 @@ import utils.IO;
 
 import java.util.Random;
 
-public class BinaryTreeTest {
+class BinaryTreeTest {
 
     public static void main(String[] args) {
         Random randomGenerator = new Random();

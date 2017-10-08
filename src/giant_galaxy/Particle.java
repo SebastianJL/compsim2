@@ -5,7 +5,7 @@ import utils.IO;
 import java.awt.*;
 import java.util.Random;
 
-public class Particle {
+class Particle {
     private double[] position;
 
     Particle(int dimensions, Random randomGenerator) {
@@ -38,9 +38,7 @@ public class Particle {
     public void paint(Graphics g, double scale, int size) {
         double x = position(0) * scale;
         double y = position(1) * scale;
-        int width = size;
-        int height = size;
-        g.drawRect((int) x, (int) y, (int) width, (int) height);
+        g.drawRect((int) x, (int) y, (int) size, (int) size);
     }
 
     double dist2(double[] pos){

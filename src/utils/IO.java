@@ -11,11 +11,11 @@ public class IO {
     public static <T> void print(T[] array) { System.out.println(toString(array));}
 
 
-    public static <T> String toString(T[] array) {
+    private static <T> String toString(T[] array) {
         return toString(array, 0, array.length-1);
     }
 
-    public static <T> String toString(T[] array, int start, int end) {
+    private static <T> String toString(T[] array, int start, int end) {
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         for (int i=start; i<end; i++) {
@@ -30,7 +30,7 @@ public class IO {
         return toString(array, 0, array.length-1);
     }
 
-    public static String toString(double[] a, int start, int end) {
+    private static String toString(double[] a, int start, int end) {
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         for (int i=start; i<end; i++) {
@@ -40,11 +40,11 @@ public class IO {
         return sb.toString();
     }
 
-    public static String toString(int[] array) {
+    private static String toString(int[] array) {
         return toString(array, 0, array.length-1);
     }
 
-    public static String toString(int[] a, int start, int end) {
+    private static String toString(int[] a, int start, int end) {
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         for (int i=start; i<end; i++) {

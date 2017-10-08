@@ -7,12 +7,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
-public class GiantGalaxy extends JPanel {
+class GiantGalaxy extends JPanel {
 
     private static final long serialVersionUID = 1L;  //used for JPanel
     private BinaryTree tree;
-    private double[] ballwalkCenter = new double[]{0.75, 0.25};
-    private double rMax = 0.1;
+    private final double[] ballwalkCenter = new double[]{0.75, 0.25};
+    private final double rMax = 0.1;
 
     public static void main(String[] argv) {
         GiantGalaxy galaxy = new GiantGalaxy();
