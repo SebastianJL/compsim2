@@ -15,8 +15,8 @@ class Particle {
         }
     }
 
-    public Particle(double[] coords) {
-        this.position = coords;
+    public Particle(double[] coordinates) {
+        this.position = coordinates;
     }
 
     public int dimensions() {

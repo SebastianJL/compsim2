@@ -14,8 +14,8 @@ class BinaryTree {
     public int partitions = 0;
     public int operations = 0;
 
-    BinaryTree(int dimensions, int nparticles, Random randomGenerator) {
-        particles = new Particle[nparticles];
+    BinaryTree(int dimensions, int nParticles, Random randomGenerator) {
+        particles = new Particle[nParticles];
         for (int i = 0; i < particles.length; i++) {
             particles[i] = new Particle(dimensions, randomGenerator);
         }
@@ -54,7 +54,7 @@ class BinaryTree {
     }
 
     /**
-     * Recursivly builds the BinaryTree with Nodes based on particles.
+     * Recursively builds the BinaryTree with Nodes based on particles.
      * @param dimension Indicates the dimension at which to partition at this level of the recursion.
      * @param currentNode
      */
@@ -71,23 +71,23 @@ class BinaryTree {
         double[] lPosMin = currentNode.posMin.clone();
         double[] lPosMax = currentNode.posMax.clone();
         lPosMax[dimension] = pivot;
-        int lstart = currentNode.start;
-        int lend = i - 1;
+        int lStart = currentNode.start;
+        int lEnd = i - 1;
 
         // Set right node parameters
         double[] rPosMin = currentNode.posMin.clone();
         double[] rPosMax = currentNode.posMax.clone();
         rPosMin[dimension] = pivot;
-        int rstart = i;
-        int rend = currentNode.end;
+        int rStart = i;
+        int rEnd = currentNode.end;
 
         // Recurse
-        if (lend - lstart >= 0) {
-            currentNode.lChild = new Node(lPosMin, lPosMax, lstart, lend, currentNode);
+        if (lEnd - lStart >= 0) {
+            currentNode.lChild = new Node(lPosMin, lPosMax, lStart, lEnd, currentNode);
             buildTree(nextDimension, currentNode.lChild);
         }
-        if (rend - rstart >= 0) {
-            currentNode.rChild = new Node(rPosMin, rPosMax, rstart, rend, currentNode);
+        if (rEnd - rStart >= 0) {
+            currentNode.rChild = new Node(rPosMin, rPosMax, rStart, rEnd, currentNode);
             buildTree(nextDimension, currentNode.rChild);
         }
     }
@@ -121,6 +121,7 @@ class BinaryTree {
         g.setColor(Color.BLUE);
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     int ballwalk(double[] pos, double rMax) {
         return root.ballwalk(pos, Math.pow(rMax, 2));
     }
@@ -129,6 +130,7 @@ class BinaryTree {
     /**
      * Basic Container for the BinaryTree.
      */
+    @SuppressWarnings("SpellCheckingInspection")
     class Node {
         /**
          *

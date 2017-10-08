@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
+@SuppressWarnings("SpellCheckingInspection")
 class GiantGalaxy extends JPanel {
 
     private static final long serialVersionUID = 1L;  //used for JPanel
