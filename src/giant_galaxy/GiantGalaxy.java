@@ -4,6 +4,7 @@ import utils.Drawing;
 import utils.IO;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.util.Random;
 
@@ -17,21 +18,32 @@ class GiantGalaxy extends JPanel {
 
     public static void main(String[] argv) {
         GiantGalaxy galaxy = new GiantGalaxy();
+
         JFrame top = new JFrame("Galaxy");
+
         top.setBounds(0, 0, 900, 900);
         top.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         top.getContentPane().add(galaxy);
-        top.setVisible(true);
+
 
         System.out.println("Start the engine");
         galaxy.run();
+        top.setVisible(true);
     }
 
     private void run() {
         Random randomGenerator = new Random();
         randomGenerator.setSeed(10);
+
+        JFrame top2 = new JFrame("Tree structure");
+        top2.setBounds(0, 0, 900, 900);
+        top2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         tree = new BinaryTree(2, 80, randomGenerator);
+        showTree(tree,top2);
+
         repaint();
+
         int nParticlesInRMax = tree.ballwalk(ballwalkCenter, rMax);
         IO.print(nParticlesInRMax);
 
@@ -55,6 +67,21 @@ class GiantGalaxy extends JPanel {
         // Draw circle for ballwalk.
         int[] scaledValues = Drawing.transform(ballwalkCenter[0], ballwalkCenter[1], 2*rMax, 2*rMax, scale);
         g.drawOval(scaledValues[0], scaledValues[1], scaledValues[2], scaledValues[3]);
+    }
+
+    public void showTree(BinaryTree tree,JFrame frame){
+
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        JTree jt = new JTree(root);
+        frame.getContentPane().add(jt);
+        frame.setVisible(true);
+
+        tree.buildTreeImage(root);
+
+        for (int i = 0; i < jt.getRowCount(); i++)
+        {
+            jt.expandRow(i);
+        }
     }
 }
 
