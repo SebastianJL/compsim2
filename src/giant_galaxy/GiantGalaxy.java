@@ -30,7 +30,7 @@ class GiantGalaxy extends JPanel {
     private void run() {
         Random randomGenerator = new Random();
         randomGenerator.setSeed(10);
-        tree = new BinaryTree(2, 80, randomGenerator);
+        tree = new BinaryTree(2, (int) 1e2, randomGenerator);
         repaint();
         int nParticlesInRMax = tree.ballwalk(ballwalkCenter, rMax);
         IO.print(nParticlesInRMax);
@@ -53,8 +53,9 @@ class GiantGalaxy extends JPanel {
         tree.paint(g, scale);
 
         // Draw circle for ballwalk.
-        int[] scaledValues = Drawing.transform(ballwalkCenter[0], ballwalkCenter[1], 2*rMax, 2*rMax, scale);
-        g.drawOval(scaledValues[0], scaledValues[1], scaledValues[2], scaledValues[3]);
+        Rectangle scaledValues = Drawing.transform(ballwalkCenter[0], ballwalkCenter[1], 2*rMax, 2*rMax,
+                scale, true);
+        g.drawOval(scaledValues.x, scaledValues.y, scaledValues.width, scaledValues.height);
     }
 }
 

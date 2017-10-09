@@ -1,6 +1,7 @@
 package giant_galaxy;
 
 import utils.Array;
+import utils.Drawing;
 
 import java.awt.*;
 import java.util.Random;
@@ -11,8 +12,8 @@ class BinaryTree {
     private final Particle[] particles;
     int swaps = 0;
     int comparisons = 0;
-    int partitions = 0;
     int operations = 0;
+    int partitions = 0;
 
     BinaryTree(int dimensions, int nParticles, Random randomGenerator) {
         particles = new Particle[nParticles];
@@ -205,12 +206,14 @@ class BinaryTree {
                 double y = posMin[1] * scale;
                 double width = (posMax[0] - posMin[0]) * scale;
                 double height = (posMax[1] - posMin[1]) * scale;
+                Rectangle scaledValues = Drawing.transform(posMin[0], posMin[1], posMax[0] - posMin[0],
+                        posMax[1] - posMin[1], scale);
                 g.setColor(Color.BLACK);
-                g.drawRect((int) x, (int) y, (int) width, (int) height);
+                g.drawRect(scaledValues.x, scaledValues.y, scaledValues.width, scaledValues.height);
                 Random rand = new Random();
                 g.setColor(new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()));
                 for (int i = start; i <= end; i++) {
-                    particles[i].paint(g, scale, 3);
+                    particles[i].paint(g, scale, 7);
                 }
             } else {
                 if (hasLeft()) {
