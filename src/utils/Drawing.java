@@ -12,17 +12,24 @@ public class Drawing {
         return Math.min(bounds.width, bounds.height) / max;
     }
 
-    public static int[] transform(double x, double y, double width, double height, double scale) {
+
+    public static Rectangle transform(double x, double y, double width, double height, double scale) {
+        return transform(x, y, width, height, scale, false);
+    }
+
+    public static Rectangle transform(double x, double y, double width, double height, double scale, boolean center) {
         // Center values about x, y
-        x -= width/2;
-        y -= height/2;
+        if (center) {
+            x -= width/2;
+            y -= height/2;
+        }
 
         // Scale values
-        int xScaled = (int) (x * scale);
-        int yScaled = (int) (y * scale);
-        int widthScaled = (int) (width * scale);
-        int heightScaled = (int) (height * scale);
+        int xScaled = (int) Math.round(x * scale);
+        int yScaled = (int) Math.round(y * scale);
+        int widthScaled = (int) Math.round(width * scale);
+        int heightScaled = (int) Math.round(height * scale);
 
-        return new int[]{xScaled, yScaled, widthScaled, heightScaled};
+        return new Rectangle(xScaled, yScaled, widthScaled, heightScaled);
     }
 }

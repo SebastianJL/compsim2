@@ -65,8 +65,9 @@ class GiantGalaxy extends JPanel {
         tree.paint(g, scale);
 
         // Draw circle for ballwalk.
-        int[] scaledValues = Drawing.transform(ballwalkCenter[0], ballwalkCenter[1], 2*rMax, 2*rMax, scale);
-        g.drawOval(scaledValues[0], scaledValues[1], scaledValues[2], scaledValues[3]);
+        Rectangle scaledValues = Drawing.transform(ballwalkCenter[0], ballwalkCenter[1], 2*rMax, 2*rMax,
+                scale, true);
+        g.drawOval(scaledValues.x, scaledValues.y, scaledValues.width, scaledValues.height);
     }
 
     public void showTree(BinaryTree tree,JFrame frame){

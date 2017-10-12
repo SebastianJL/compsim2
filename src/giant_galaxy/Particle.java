@@ -1,5 +1,6 @@
 package giant_galaxy;
 
+import utils.Drawing;
 import utils.IO;
 
 import java.awt.*;
@@ -36,9 +37,8 @@ class Particle {
     }
 
     void paint(Graphics g, double scale, int size) {
-        double x = position(0) * scale;
-        double y = position(1) * scale;
-        g.drawRect((int) x, (int) y, size, size);
+        Rectangle scaledValues = Drawing.transform(position(0), position(1), size/scale, size/scale, scale, true);
+        g.fillRect(scaledValues.x, scaledValues.y, scaledValues.width, scaledValues.height);
     }
 
     double dist2(double[] pos){
