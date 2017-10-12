@@ -5,6 +5,7 @@ import utils.Drawing;
 
 import java.awt.*;
 import java.util.Random;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 class BinaryTree {
 
@@ -123,6 +124,9 @@ class BinaryTree {
         g.setColor(Color.BLUE);
     }
 
+    void buildTreeImage(DefaultMutableTreeNode root){
+        this.root.buildTreeImage(root);
+    }
     @SuppressWarnings("SpellCheckingInspection")
     int ballwalk(double[] pos, double rMax) {
         return root.ballwalk(pos, Math.pow(rMax, 2));
@@ -222,6 +226,17 @@ class BinaryTree {
                 if (hasRight()) {
                     rChild.paint(g, scale);
                 }
+            }
+        }
+
+        void buildTreeImage(DefaultMutableTreeNode parent){
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode("start = " + start+", end= "+end);
+            parent.add(node);
+            if(hasLeft()) {
+                lChild.buildTreeImage(node);
+            }
+            if (hasRight()) {
+                rChild.buildTreeImage(node);
             }
         }
     }
