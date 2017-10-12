@@ -4,6 +4,7 @@ import utils.Array;
 import utils.Drawing;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Random;
 
 class BinaryTree {
@@ -128,13 +129,46 @@ class BinaryTree {
         return root.ballwalk(pos, Math.pow(rMax, 2));
     }
 
+    double distCentGrav(double[] pos, Node node){
+        double dist2 = 0;
+
+        double[] centGrav  = centerOfGravity(Arrays.copyOfRange(particles, node.start, node.end));
+        for(int i=0; i<dimensions(); i++){
+            dist2 += Math.pow(pos[i]-centGrav[i],2);
+        }
+        return dist2;
+    }
+
+    double[] centerOfGravity(Particle[] particles){
+        int dimensions = dimensions();
+        double[] centGrav = new double[dimensions];
+        for(int i=0; i<dimensions; i++){
+            for(int j=0; j<particles.length; j++){
+                centGrav[i] += particles[j].position(i);
+            }
+            centGrav[i] /= particles.length;
+        }
+        return centGrav;
+    }
+
     double kNearestNeighbours(double[] pos, int k) {
         FixedPriorityQueue queue = new LinearFixedPriorityQueue(k);
-        kNearestNeighbours(pos, k, root, queue);
+        kNearestNeighbours(pos, k, root, queue, 0);
         return queue.max();
     }
 
-    void kNearestNeighbours(double[] pos, int k, Node currentNode, FixedPriorityQueue queue) {
+    void kNearestNeighbours(double[] pos, int k, Node currentNode, FixedPriorityQueue queue, int mode) {
+        /*
+        mode: 0 for dist2 (Nodenorm), 1 for CenterOfGravityNorm
+         */
+        double difference = 0;
+        if(mode==0) {
+            difference = currentNode.lChild.dist2(pos) - currentNode.rChild.dist2(pos);
+        }
+        else{
+            difference = distCentGrav(pos, currentNode.lChild) - distCentGrav(pos, currentNode.rChild);
+        }
+
         if (currentNode.isLeaf()) {
             for (int i = currentNode.start; i < currentNode.end; i++) {
                 queue.insert(particles[i].dist2(pos), i);
@@ -142,19 +176,26 @@ class BinaryTree {
         }
 
         else if (currentNode.hasLeft() && currentNode.hasRight()) {
-            if (currentNode.lChild.dist2(pos) < currentNode.rChild.dist2(pos)) {
-                kNearestNeighbours(pos, k, currentNode.lChild, queue);
+            if (difference<0) {
+                kNearestNeighbours(pos, k, currentNode.lChild, queue, mode);
+                if(currentNode.rChild.dist2(pos) < queue.max()) {
+                    kNearestNeighbours(pos, k, currentNode.rChild, queue, mode);
+                }
             } else {
-                kNearestNeighbours(pos, k, currentNode.rChild, queue);
+                kNearestNeighbours(pos, k, currentNode.rChild, queue, mode);
+                if(currentNode.lChild.dist2(pos) < queue.max()) {
+                    kNearestNeighbours(pos, k, currentNode.lChild, queue, mode);
+                }
             }
         }
 
+
         else if (currentNode.hasLeft()) {
-            kNearestNeighbours(pos, k, currentNode.lChild, queue);
+            kNearestNeighbours(pos, k, currentNode.lChild, queue, mode);
         }
 
         else {
-            kNearestNeighbours(pos, k, currentNode.rChild, queue);
+            kNearestNeighbours(pos, k, currentNode.rChild, queue, mode);
         }
 
 
@@ -174,6 +215,7 @@ class BinaryTree {
         Node lChild, rChild;
         Node parent;
 
+
         Node(double[] posMin, double[] posMax, int start, int end, Node parent) {
             assert posMax.length == posMin.length;
             this.posMin = posMin;
@@ -182,6 +224,7 @@ class BinaryTree {
             this.end = end;
             this.parent = parent;
         }
+
 
         boolean isLeftChild() {
             return this == parent.lChild;
