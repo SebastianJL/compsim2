@@ -31,9 +31,6 @@ class BinaryTree {
         buildTree(0, root);
     }
 
-    public Node root(){
-        return root;
-    }
     /**
      * Partitions the particle array.
      * @post particles[lo<=x<i] < pivot && particles[i<=x<=hi] >= pivot
