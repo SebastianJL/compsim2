@@ -25,7 +25,6 @@ class GiantGalaxy extends JPanel {
         top.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         top.getContentPane().add(galaxy);
 
-
         System.out.println("Start the engine");
         galaxy.run();
         top.setVisible(true);
@@ -40,7 +39,7 @@ class GiantGalaxy extends JPanel {
         top2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         tree = new BinaryTree(2, 80, randomGenerator);
-        showTree(tree,top2);
+        showTree(tree, top2);
 
         repaint();
 
@@ -70,7 +69,7 @@ class GiantGalaxy extends JPanel {
         g.drawOval(scaledValues.x, scaledValues.y, scaledValues.width, scaledValues.height);
     }
 
-    public void showTree(BinaryTree tree,JFrame frame){
+    public void showTree(BinaryTree tree, JFrame frame){
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
         JTree jt = new JTree(root);
