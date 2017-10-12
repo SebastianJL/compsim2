@@ -10,10 +10,10 @@ class BinaryTree {
 
     private final Node root;
     private final Particle[] particles;
-    int swaps = 0;
-    int comparisons = 0;
-    int operations = 0;
-    int partitions = 0;
+//    int swaps = 0;
+//    int comparisons = 0;
+//    int operations = 0;
+//    int partitions = 0;
 
     BinaryTree(int dimensions, int nParticles, Random randomGenerator) {
         particles = new Particle[nParticles];
@@ -41,16 +41,16 @@ class BinaryTree {
      * @return index i such that the after condition is fulfilled.
      */
     private int partition(Particle[] particles, int lo, int hi, double pivot, int dimension) {
-        partitions++;
+//        partitions++;
         int i = lo;
         int j = hi;
-        while (true) { comparisons++;
-            while (i <= hi && particles[i].position(dimension) < pivot) i++; comparisons += 2; operations++;
-            while (j >= lo && particles[j].position(dimension) > pivot) j--; comparisons += 2; operations++;
-            if (i >= j) { comparisons++;
+        while (true) { // comparisons++;
+            while (i <= hi && particles[i].position(dimension) < pivot) i++; // comparisons += 2; operations++;
+            while (j >= lo && particles[j].position(dimension) > pivot) j--; // comparisons += 2; operations++;
+            if (i >= j) { // comparisons++;
                 return i;
             }
-            Array.swap(particles, i, j); swaps++;
+            Array.swap(particles, i, j); // swaps++;
         }
     }
 
@@ -126,6 +126,38 @@ class BinaryTree {
     @SuppressWarnings("SpellCheckingInspection")
     int ballwalk(double[] pos, double rMax) {
         return root.ballwalk(pos, Math.pow(rMax, 2));
+    }
+
+    double kNearestNeighbours(double[] pos, int k) {
+        FixedPriorityQueue queue = new LinearFixedPriorityQueue(k);
+        kNearestNeighbours(pos, k, root, queue);
+        return queue.max();
+    }
+
+    void kNearestNeighbours(double[] pos, int k, Node currentNode, FixedPriorityQueue queue) {
+        if (currentNode.isLeaf()) {
+            for (int i = currentNode.start; i < currentNode.end; i++) {
+                queue.insert(particles[i].dist2(pos), i);
+            }
+        }
+
+        else if (currentNode.hasLeft() && currentNode.hasRight()) {
+            if (currentNode.lChild.dist2(pos) < currentNode.rChild.dist2(pos)) {
+                kNearestNeighbours(pos, k, currentNode.lChild, queue);
+            } else {
+                kNearestNeighbours(pos, k, currentNode.rChild, queue);
+            }
+        }
+
+        else if (currentNode.hasLeft()) {
+            kNearestNeighbours(pos, k, currentNode.lChild, queue);
+        }
+
+        else {
+            kNearestNeighbours(pos, k, currentNode.rChild, queue);
+        }
+
+
     }
 
 
