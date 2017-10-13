@@ -5,7 +5,7 @@ import giant_galaxy.Particle;
 
 import java.util.Arrays;
 
-public class CenterOfGravity2 implements IMetric<Node>{
+public class CenterOfGravityDist2 implements IMetric<Node>{
 
     @Override
     public double metric(double[] pos, Node node) {
