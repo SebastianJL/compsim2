@@ -1,5 +1,7 @@
 package giant_galaxy;
 
+import dist.CenterOfGravityDist2;
+import dist.IMetric;
 import utils.Drawing;
 import utils.IO;
 
@@ -14,6 +16,7 @@ class GiantGalaxy extends JPanel {
     private BinaryTree tree;
     private final double[] ballwalkCenter = new double[]{0.75, 0.25};
     private final double rMax = 0.1;
+    private double rKNN;
 
     public static void main(String[] argv) {
         GiantGalaxy galaxy = new GiantGalaxy();
@@ -31,10 +34,14 @@ class GiantGalaxy extends JPanel {
         Random randomGenerator = new Random();
         randomGenerator.setSeed(10);
         tree = new BinaryTree(2, (int) 1e2, randomGenerator);
-        repaint();
         int nParticlesInRMax = tree.ballwalk(ballwalkCenter, rMax);
-        IO.print(nParticlesInRMax);
 
+        IMetric cogDist2 = CenterOfGravityDist2.getInstance();
+        rKNN = tree.kNearestNeighbours(ballwalkCenter, nParticlesInRMax, cogDist2);
+        IO.print("nParticlesInRMax: " + nParticlesInRMax);
+        IO.print("rMax: " + rMax);
+        IO.print("rKNN: " + rKNN);
+        repaint();
     }
 
 
@@ -56,6 +63,11 @@ class GiantGalaxy extends JPanel {
         Rectangle scaledValues = Drawing.transform(ballwalkCenter[0], ballwalkCenter[1], 2*rMax, 2*rMax,
                 scale, true);
         g.drawOval(scaledValues.x, scaledValues.y, scaledValues.width, scaledValues.height);
+
+        // Draw circle for kNN
+        Rectangle kNNCoords = Drawing.transform(ballwalkCenter[0], ballwalkCenter[1], 2*rKNN, 2*rKNN,
+                scale, true);
+        g.drawOval(kNNCoords.x, kNNCoords.y, kNNCoords.width, kNNCoords.height);
     }
 }
 
