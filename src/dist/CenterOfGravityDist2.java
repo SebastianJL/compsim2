@@ -7,6 +7,14 @@ import java.util.Arrays;
 
 public class CenterOfGravityDist2 implements IMetric<Node>{
 
+    static CenterOfGravityDist2 instance = new CenterOfGravityDist2();
+
+    private CenterOfGravityDist2() {}
+
+    public static CenterOfGravityDist2 getInstance() {
+        return instance;
+    }
+
     @Override
     public double metric(double[] pos, Node node) {
         double dist2 = 0;
