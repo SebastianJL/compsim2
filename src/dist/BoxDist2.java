@@ -4,15 +4,12 @@ import giant_galaxy.Node;
 
 public class BoxDist2 implements IMetric<Node> {
 
-    static BoxDist2 self;
+    static BoxDist2 instance = new BoxDist2();
 
     private BoxDist2() {}
 
     public static BoxDist2 getInstance() {
-        if (self == null) {
-            self = new BoxDist2();
-        }
-        return self;
+        return instance;
     }
 
     @Override
