@@ -1,16 +1,17 @@
 package giant_galaxy;
 
+import dist.BoxDist2;
+import dist.IMetric;
 import utils.Array;
-import utils.Drawing;
 
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Random;
 
-class BinaryTree {
+public class BinaryTree {
 
     private final Node root;
-    private final Particle[] particles;
+    public final Particle[] particles;
 //    int swaps = 0;
 //    int comparisons = 0;
 //    int operations = 0;
@@ -27,7 +28,7 @@ class BinaryTree {
             posMin[i] = 0;
             posMax[i] = 1;
         }
-        root = new Node(posMin, posMax, 0, particles.length - 1, null);
+        root = new Node(posMin, posMax, 0, particles.length - 1, null, this);
         buildTree(0, root);
     }
 
@@ -86,16 +87,16 @@ class BinaryTree {
 
         // Recurse
         if (lEnd - lStart >= 0) {
-            currentNode.lChild = new Node(lPosMin, lPosMax, lStart, lEnd, currentNode);
+            currentNode.lChild = new Node(lPosMin, lPosMax, lStart, lEnd, currentNode, this);
             buildTree(nextDimension, currentNode.lChild);
         }
         if (rEnd - rStart >= 0) {
-            currentNode.rChild = new Node(rPosMin, rPosMax, rStart, rEnd, currentNode);
+            currentNode.rChild = new Node(rPosMin, rPosMax, rStart, rEnd, currentNode, this);
             buildTree(nextDimension, currentNode.rChild);
         }
     }
 
-    private int dimensions() {
+    public int dimensions() {
         return particles[0].dimensions();
     }
 
@@ -126,48 +127,22 @@ class BinaryTree {
 
     @SuppressWarnings("SpellCheckingInspection")
     int ballwalk(double[] pos, double rMax) {
-        return root.ballwalk(pos, Math.pow(rMax, 2));
+        BoxDist2 boxDist2 = BoxDist2.getInstance();
+        return root.ballwalk(pos, Math.pow(rMax, 2), boxDist2);
     }
 
-    double distCentGrav(double[] pos, Node node){
-        double dist2 = 0;
-
-        double[] centGrav  = centerOfGravity(Arrays.copyOfRange(particles, node.start, node.end));
-        for(int i=0; i<dimensions(); i++){
-            dist2 += Math.pow(pos[i]-centGrav[i],2);
-        }
-        return dist2;
-    }
-
-    double[] centerOfGravity(Particle[] particles){
-        int dimensions = dimensions();
-        double[] centGrav = new double[dimensions];
-        for(int i=0; i<dimensions; i++){
-            for(int j=0; j<particles.length; j++){
-                centGrav[i] += particles[j].position(i);
-            }
-            centGrav[i] /= particles.length;
-        }
-        return centGrav;
-    }
-
-    double kNearestNeighbours(double[] pos, int k) {
+    double kNearestNeighbours(double[] pos, int k, IMetric metric) {
         FixedPriorityQueue queue = new LinearFixedPriorityQueue(k);
-        kNearestNeighbours(pos, k, root, queue, 0);
+        kNearestNeighbours(pos, k, root, queue, metric);
         return queue.max();
     }
 
-    void kNearestNeighbours(double[] pos, int k, Node currentNode, FixedPriorityQueue queue, int mode) {
+    void kNearestNeighbours(double[] pos, int k, Node currentNode, FixedPriorityQueue queue, IMetric<Node> metric) {
         /*
-        mode: 0 for dist2 (Nodenorm), 1 for CenterOfGravityNorm
+        mode: 0 for metric (Nodenorm), 1 for CenterOfGravityNorm
          */
-        double difference = 0;
-        if(mode==0) {
-            difference = currentNode.lChild.dist2(pos) - currentNode.rChild.dist2(pos);
-        }
-        else{
-            difference = distCentGrav(pos, currentNode.lChild) - distCentGrav(pos, currentNode.rChild);
-        }
+        double difference = metric.metric(pos, currentNode);
+
 
         if (currentNode.isLeaf()) {
             for (int i = currentNode.start; i < currentNode.end; i++) {
@@ -177,128 +152,31 @@ class BinaryTree {
 
         else if (currentNode.hasLeft() && currentNode.hasRight()) {
             if (difference<0) {
-                kNearestNeighbours(pos, k, currentNode.lChild, queue, mode);
+                kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
                 if(currentNode.rChild.dist2(pos) < queue.max()) {
-                    kNearestNeighbours(pos, k, currentNode.rChild, queue, mode);
+                    kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
                 }
-            } else {
-                kNearestNeighbours(pos, k, currentNode.rChild, queue, mode);
+            }
+            else {
+                kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
                 if(currentNode.lChild.dist2(pos) < queue.max()) {
-                    kNearestNeighbours(pos, k, currentNode.lChild, queue, mode);
+                    kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
                 }
             }
         }
 
 
         else if (currentNode.hasLeft()) {
-            kNearestNeighbours(pos, k, currentNode.lChild, queue, mode);
+            kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
         }
 
         else {
-            kNearestNeighbours(pos, k, currentNode.rChild, queue, mode);
+            kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
         }
 
 
     }
 
 
-    /**
-     * Basic Container for the BinaryTree.
-     */
-    @SuppressWarnings("SpellCheckingInspection")
-    class Node {
-        /**
-         *
-         */
-        double[] posMin, posMax, center;
-        int start, end;
-        Node lChild, rChild;
-        Node parent;
-
-
-        Node(double[] posMin, double[] posMax, int start, int end, Node parent) {
-            assert posMax.length == posMin.length;
-            this.posMin = posMin;
-            this.posMax = posMax;
-            this.start = start;
-            this.end = end;
-            this.parent = parent;
-        }
-
-
-        boolean isLeftChild() {
-            return this == parent.lChild;
-        }
-
-        boolean isLeaf() {
-            return !(hasLeft() || hasRight());
-        }
-
-        boolean hasLeft() {
-            return lChild != null;
-        }
-
-        boolean hasRight() {
-            return rChild != null;
-        }
-
-        double dist2(double[] pos){
-            double dist2 = 0;
-            for (int i = 0; i < pos.length; i++){
-                if (pos[i] < posMin[i])
-                    {dist2 += Math.pow(posMin[i] - pos[i], 2); }
-                else if (pos[i] > posMax[i])
-                    {dist2 += Math.pow(posMax[i] - pos[i], 2); }
-                else
-                    {dist2 += 0; }
-            }
-            return dist2;
-        }
-
-        int ballwalk(double[] pos, double r2max) {
-            int cnt = 0;
-            if (isLeaf()) {
-                for (int j = start; j <= end; j++){
-                    if (particles[j].dist2(pos) < r2max){
-                        cnt++;
-                    }
-                }
-            }
-            else {
-                if (lChild.dist2(pos) < r2max){
-                    cnt += lChild.ballwalk(pos, r2max);
-                }
-                if (rChild.dist2(pos) < r2max){
-                    cnt += rChild.ballwalk(pos, r2max);
-                }
-            }
-            return cnt;
-        }
-
-        void paint(Graphics g, double scale) {
-            if (isLeaf()) {
-                double x = posMin[0] * scale;
-                double y = posMin[1] * scale;
-                double width = (posMax[0] - posMin[0]) * scale;
-                double height = (posMax[1] - posMin[1]) * scale;
-                Rectangle scaledValues = Drawing.transform(posMin[0], posMin[1], posMax[0] - posMin[0],
-                        posMax[1] - posMin[1], scale);
-                g.setColor(Color.BLACK);
-                g.drawRect(scaledValues.x, scaledValues.y, scaledValues.width, scaledValues.height);
-                Random rand = new Random();
-                g.setColor(new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()));
-                for (int i = start; i <= end; i++) {
-                    particles[i].paint(g, scale, 7);
-                }
-            } else {
-                if (hasLeft()) {
-                    lChild.paint(g, scale);
-                }
-                if (hasRight()) {
-                    rChild.paint(g, scale);
-                }
-            }
-        }
-    }
 }
 
