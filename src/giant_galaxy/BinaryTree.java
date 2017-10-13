@@ -5,7 +5,6 @@ import dist.IMetric;
 import utils.Array;
 
 import java.awt.*;
-import java.util.Arrays;
 import java.util.Random;
 
 public class BinaryTree {
@@ -132,12 +131,12 @@ public class BinaryTree {
     }
 
     double kNearestNeighbours(double[] pos, int k, IMetric metric) {
-        FixedPriorityQueue queue = new LinearFixedPriorityQueue(k);
+        IFixedPriorityQueue queue = new LinearFixedPriorityQueue(k);
         kNearestNeighbours(pos, k, root, queue, metric);
         return queue.max();
     }
 
-    void kNearestNeighbours(double[] pos, int k, Node currentNode, FixedPriorityQueue queue, IMetric<Node> metric) {
+    void kNearestNeighbours(double[] pos, int k, Node currentNode, IFixedPriorityQueue queue, IMetric<Node> metric) {
         /*
         mode: 0 for metric (Nodenorm), 1 for CenterOfGravityNorm
          */

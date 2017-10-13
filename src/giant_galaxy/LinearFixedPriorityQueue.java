@@ -5,7 +5,7 @@ package giant_galaxy;
  * Fixed width priority queue that keeps n elements with the highest priority. I.e. elements with lower priority are
  * kicked out.
  */
-public class LinearFixedPriorityQueue implements FixedPriorityQueue {
+public class LinearFixedPriorityQueue implements IFixedPriorityQueue {
     int[] indices;
     double[] r2List;
     int r2Max; // Index of maximal r2 in r2List.
