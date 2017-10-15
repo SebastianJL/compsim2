@@ -137,28 +137,30 @@ public class BinaryTree {
     }
 
     void kNearestNeighbours(double[] pos, int k, Node currentNode, IFixedPriorityQueue queue, IMetric<Node> metric) {
-        /*
-        mode: 0 for metric (Nodenorm), 1 for CenterOfGravityNorm
-         */
-        double difference = metric.metric(pos, currentNode);
-
 
         if (currentNode.isLeaf()) {
-            for (int i = currentNode.start; i < currentNode.end; i++) {
+            for (int i = currentNode.start; i <= currentNode.end; i++) {
                 queue.insert(particles[i].dist2(pos), i);
             }
         }
 
         else if (currentNode.hasLeft() && currentNode.hasRight()) {
+
+            double difference = metric.metric(pos,currentNode.lChild)-metric.metric(pos,currentNode.rChild);
+
             if (difference<0) {
-                kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
-                if(currentNode.rChild.dist2(pos) < queue.max()) {
+                if((queue.max() == Double.POSITIVE_INFINITY) || (currentNode.lChild.dist2(pos) < queue.max())) {
+                    kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
+                }
+                if((queue.max() == Double.POSITIVE_INFINITY) || (currentNode.rChild.dist2(pos) < queue.max())) {
                     kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
                 }
             }
             else {
-                kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
-                if(currentNode.lChild.dist2(pos) < queue.max()) {
+                if((queue.max() == Double.POSITIVE_INFINITY) || (currentNode.rChild.dist2(pos) < queue.max())) {
+                    kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
+                }
+                if((queue.max() == Double.POSITIVE_INFINITY) || (currentNode.lChild.dist2(pos) < queue.max())) {
                     kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
                 }
             }
