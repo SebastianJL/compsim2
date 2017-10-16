@@ -11,6 +11,7 @@ public class BinaryTree {
 
     private final Node root;
     public final Particle[] particles;
+    private boolean isBuilt = false;
 //    int swaps = 0;
 //    int comparisons = 0;
 //    int operations = 0;
@@ -28,16 +29,20 @@ public class BinaryTree {
             posMax[i] = 1;
         }
         root = new Node(posMin, posMax, 0, particles.length - 1, null, this);
-        buildTree(0, root);
+        buildTree(root);
+    }
+
+    public boolean isBuilt() {
+        return isBuilt;
     }
 
     /**
      * Partitions the particle array.
-     * @post particles[lo<=x<i] < pivot && particles[i<=x<=hi] >= pivot
-     * @param particles Array of particles.
+     * @post indices[lo<=x<i] < pivot && indices[i<=x<=hi] >= pivot
+     * @param particles Array of indices.
      * @param lo Lower index of partition.
      * @param hi Higher index of partition.
-     * @param pivot Value to sort particles by. (All lower ones and all higher ones.)
+     * @param pivot Value to sort indices by. (All lower ones and all higher ones.)
      * @param dimension Dimension (0, 1, 2, ...) to partition by.
      * @return index i such that the after condition is fulfilled.
      */
@@ -55,8 +60,13 @@ public class BinaryTree {
         }
     }
 
+    private void buildTree(Node root) {
+        buildTree(0, root);
+        isBuilt = true;
+    }
+
     /**
-     * Recursively builds the BinaryTree with Nodes based on particles.
+     * Recursively builds the BinaryTree with Nodes based on indices.
      * @param dimension Indicates the dimension at which to partition at this level of the recursion.
      * @param currentNode Node on which the algorithm currently acts upon.
      */
@@ -130,21 +140,25 @@ public class BinaryTree {
         return root.ballwalk(pos, Math.pow(rMax, 2), boxDist2);
     }
 
-    double kNearestNeighbours(double[] pos, int k, IMetric metric) {
+    /**
+     * Calculates minimal radius squared including the k nearest neighbours.
+     * @param pos Center from which to search the k nearest neighbours.
+     * @param k Number of particles to search.
+     * @param metric Metric to measure distance.
+     * @return Minimal radius squared.
+     */
+    IFixedPriorityQueue kNearestNeighbours(double[] pos, int k, IMetric metric) {
         IFixedPriorityQueue queue = new LinearFixedPriorityQueue(k);
         kNearestNeighbours(pos, k, root, queue, metric);
-        return queue.max();
+        return queue;
     }
 
     void kNearestNeighbours(double[] pos, int k, Node currentNode, IFixedPriorityQueue queue, IMetric<Node> metric) {
-        /*
-        mode: 0 for metric (Nodenorm), 1 for CenterOfGravityNorm
-         */
         double difference = metric.metric(pos, currentNode);
 
 
         if (currentNode.isLeaf()) {
-            for (int i = currentNode.start; i < currentNode.end; i++) {
+            for (int i = currentNode.start; i <= currentNode.end; i++) {
                 queue.insert(particles[i].dist2(pos), i);
             }
         }

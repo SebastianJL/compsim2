@@ -6,9 +6,9 @@ package giant_galaxy;
  * kicked out.
  */
 public class LinearFixedPriorityQueue implements IFixedPriorityQueue {
-    int[] indices;
-    double[] r2List;
-    int r2Max; // Index of maximal r2 in r2List.
+    private int[] indices;  // indices of indices in indices array.
+    private double[] r2List;  // distance squared between indices and positions.
+    private int r2Max; // Index of maximal r2 in r2List.
 
     LinearFixedPriorityQueue(int size) {
         indices = new int[size];
@@ -39,11 +39,17 @@ public class LinearFixedPriorityQueue implements IFixedPriorityQueue {
     }
 
     @Override
+    /**
+     * @return maximal radius square in queue.
+     */
     public double max() {
         return r2List[r2Max];
     }
 
-    int[] particles() {
+    /**
+     * @return Array of indices corresponding to indices array in BinaryTree.
+     */
+    public int[] indices() {
         return indices.clone();
     }
 }

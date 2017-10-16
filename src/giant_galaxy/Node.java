@@ -18,7 +18,7 @@ public class Node {
     public final double[] posMin, posMax;
     /**
      * start - first index
-     * end - inclusive last index of particles included in this node. (may not lay outside of array)
+     * end - inclusive last index of indices included in this node. (may not lay outside of array)
      */
     public final int start, end;
     Node lChild, rChild;
@@ -75,10 +75,10 @@ public class Node {
             }
         }
         else {
-            if (boxDist2.metric(pos, lChild) < r2max){
+            if (hasLeft() && boxDist2.metric(pos, lChild) < r2max){
                 cnt += lChild.ballwalk(pos, r2max, boxDist2);
             }
-            if (boxDist2.metric(pos, rChild) < r2max){
+            if (hasRight() && boxDist2.metric(pos, rChild) < r2max){
                 cnt += rChild.ballwalk(pos, r2max, boxDist2);
             }
         }
