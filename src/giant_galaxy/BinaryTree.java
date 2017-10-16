@@ -161,7 +161,6 @@ public class BinaryTree {
                 queue.insert(particles[i].dist2(pos), i);
             }
         }
-
         else if (currentNode.hasLeft() && currentNode.hasRight()) {
             if (metric.metric(pos, currentNode.lChild) < metric.metric(pos, currentNode.rChild)) {
                 kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
@@ -176,19 +175,12 @@ public class BinaryTree {
                 }
             }
         }
-
-
         else if (currentNode.hasLeft() && dist2.metric(pos, currentNode.lChild) < queue.max()) {
             kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
         }
-
         else if (dist2.metric(pos, currentNode.rChild) < queue.max()) {
             kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
         }
-
-
     }
-
-
 }
 
