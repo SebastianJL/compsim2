@@ -154,8 +154,7 @@ public class BinaryTree {
     }
 
     void kNearestNeighbours(double[] pos, int k, Node currentNode, IFixedPriorityQueue queue, IMetric<Node> metric) {
-        double difference = metric.metric(pos, currentNode);
-
+        BoxDist2 dist2 = BoxDist2.getInstance();
 
         if (currentNode.isLeaf()) {
             for (int i = currentNode.start; i <= currentNode.end; i++) {
@@ -164,26 +163,26 @@ public class BinaryTree {
         }
 
         else if (currentNode.hasLeft() && currentNode.hasRight()) {
-            if (difference<0) {
+            if (metric.metric(pos, currentNode.lChild) < metric.metric(pos, currentNode.rChild)) {
                 kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
-                if(currentNode.rChild.dist2(pos) < queue.max()) {
+                if(dist2.metric(pos, currentNode.rChild) < queue.max()) {
                     kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
                 }
             }
             else {
                 kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
-                if(currentNode.lChild.dist2(pos) < queue.max()) {
+                if(dist2.metric(pos, currentNode.lChild) < queue.max()) {
                     kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
                 }
             }
         }
 
 
-        else if (currentNode.hasLeft()) {
+        else if (currentNode.hasLeft() && dist2.metric(pos, currentNode.lChild) < queue.max()) {
             kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
         }
 
-        else {
+        else if (dist2.metric(pos, currentNode.rChild) < queue.max()) {
             kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
         }
 
