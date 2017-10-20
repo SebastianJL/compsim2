@@ -1,10 +1,12 @@
 package giant_galaxy;
 
 import dist.BoxDist2;
+import dist.CenterOfGravityDist2;
 import dist.IMetric;
 import utils.Array;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Random;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -95,6 +97,12 @@ public class BinaryTree {
         int rStart = i;
         int rEnd = currentNode.end;
 
+        //Create CoG object
+        CenterOfGravityDist2 cOgObject = CenterOfGravityDist2.getInstance();
+
+        //Particle array slicing
+        Particle[] nodeParticles = Arrays.copyOfRange(particles, currentNode.start, currentNode.end)
+
         // Recurse
         if (lEnd - lStart >= 0) {
             currentNode.lChild = new Node(lPosMin, lPosMax, lStart, lEnd, currentNode, this);
@@ -103,6 +111,43 @@ public class BinaryTree {
         if (rEnd - rStart >= 0) {
             currentNode.rChild = new Node(rPosMin, rPosMax, rStart, rEnd, currentNode, this);
             buildTree(nextDimension, currentNode.rChild);
+        }
+
+
+        // Going up again. Fill gravity stuff
+        if (currentNode.isLeaf()){
+            int j = currentNode.start;
+            for (Particle nodeParticle : nodeParticles) {
+                nodeParticle.number  = j++;
+            }
+            currentNode.mass = cOgObject.mass(nodeParticles);
+            currentNode.centerOfGravity = cOgObject.centerOfGravity
+                    (nodeParticles,dimensions());
+            currentNode.RMax = cOgObject.RMaxFromCoG(currentNode.centerOfGravity, nodeParticles);
+        }
+        else {
+            if(currentNode.hasLeft() && currentNode.hasRight()){
+                currentNode.mass = currentNode.lChild.mass + currentNode.rChild.mass;
+                currentNode.centerOfGravity = cOgObject.CombinedCenterOfGravity
+                        (currentNode.lChild.mass, currentNode.rChild.mass,
+                                currentNode.lChild.centerOfGravity, currentNode.rChild.centerOfGravity);
+                currentNode.RMax = cOgObject.CombinedRMaxFromCombinedCoG
+                        (currentNode.lChild.centerOfGravity, currentNode.rChild.centerOfGravity,
+                        currentNode.centerOfGravity,
+                        currentNode.lChild.RMax, currentNode.rChild.RMax);
+
+            }
+            else if(currentNode.hasRight()){
+                currentNode.mass = currentNode.rChild.mass;
+                currentNode.centerOfGravity = currentNode.rChild.centerOfGravity;
+                currentNode.RMax = currentNode.rChild.RMax;
+            }
+            else{
+                currentNode.mass = currentNode.lChild.mass;
+                currentNode.centerOfGravity = currentNode.lChild.centerOfGravity;
+                currentNode.RMax = currentNode.lChild.RMax;
+
+            }
         }
     }
 
