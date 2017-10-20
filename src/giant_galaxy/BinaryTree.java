@@ -6,6 +6,7 @@ import utils.Array;
 
 import java.awt.*;
 import java.util.Random;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class BinaryTree {
 
@@ -134,6 +135,9 @@ public class BinaryTree {
         g.setColor(Color.BLUE);
     }
 
+    void buildTreeImage(DefaultMutableTreeNode root){
+        this.root.buildTreeImage(root);
+    }
     @SuppressWarnings("SpellCheckingInspection")
     int ballwalk(double[] pos, double rMax) {
         BoxDist2 boxDist2 = BoxDist2.getInstance();
@@ -180,6 +184,17 @@ public class BinaryTree {
         }
         else if (dist2.metric(pos, currentNode.rChild) < queue.max()) {
             kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
+        }
+
+        void buildTreeImage(DefaultMutableTreeNode parent){
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode("start = " + start+", end= "+end);
+            parent.add(node);
+            if(hasLeft()) {
+                lChild.buildTreeImage(node);
+            }
+            if (hasRight()) {
+                rChild.buildTreeImage(node);
+            }
         }
     }
 }

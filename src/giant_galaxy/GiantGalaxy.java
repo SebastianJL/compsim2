@@ -7,6 +7,7 @@ import utils.Drawing;
 import utils.IO;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.util.Random;
 
@@ -22,19 +23,22 @@ class GiantGalaxy extends JPanel {
 
     public static void main(String[] argv) {
         GiantGalaxy galaxy = new GiantGalaxy();
+
         JFrame top = new JFrame("Galaxy");
+
         top.setBounds(0, 0, 900, 900);
         top.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         top.getContentPane().add(galaxy);
-        top.setVisible(true);
 
         System.out.println("Start the engine");
         galaxy.run();
+        top.setVisible(true);
     }
 
     private void run() {
         Random randomGenerator = new Random();
         randomGenerator.setSeed(10);
+        feature_priority_queue
         tree = new BinaryTree(2, (int) 1e2, randomGenerator);
         int nParticlesInRMax = tree.ballwalk(ballwalkCenter, rMax);
 
@@ -82,6 +86,21 @@ class GiantGalaxy extends JPanel {
             for (int i : queue.indices()) {
                 tree.particles[i].paint(g, scale, 8);
             }
+        }
+    }
+
+    public void showTree(BinaryTree tree, JFrame frame){
+
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        JTree jt = new JTree(root);
+        frame.getContentPane().add(jt);
+        frame.setVisible(true);
+
+        tree.buildTreeImage(root);
+
+        for (int i = 0; i < jt.getRowCount(); i++)
+        {
+            jt.expandRow(i);
         }
     }
 }
