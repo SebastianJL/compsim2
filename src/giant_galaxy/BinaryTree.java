@@ -1,20 +1,22 @@
 package giant_galaxy;
 
+import dist.BoxDist2;
+import dist.IMetric;
 import utils.Array;
-import utils.Drawing;
 
 import java.awt.*;
 import java.util.Random;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-class BinaryTree {
+public class BinaryTree {
 
     private final Node root;
-    private final Particle[] particles;
-    int swaps = 0;
-    int comparisons = 0;
-    int operations = 0;
-    int partitions = 0;
+    public final Particle[] particles;
+    private boolean isBuilt = false;
+//    int swaps = 0;
+//    int comparisons = 0;
+//    int operations = 0;
+//    int partitions = 0;
 
     BinaryTree(int dimensions, int nParticles, Random randomGenerator) {
         particles = new Particle[nParticles];
@@ -27,36 +29,45 @@ class BinaryTree {
             posMin[i] = 0;
             posMax[i] = 1;
         }
-        root = new Node(posMin, posMax, 0, particles.length - 1, null);
-        buildTree(0, root);
+        root = new Node(posMin, posMax, 0, particles.length - 1, null, this);
+        buildTree(root);
+    }
+
+    public boolean isBuilt() {
+        return isBuilt;
     }
 
     /**
      * Partitions the particle array.
-     * @post particles[lo<=x<i] < pivot && particles[i<=x<=hi] >= pivot
-     * @param particles Array of particles.
+     * @post indices[lo<=x<i] < pivot && indices[i<=x<=hi] >= pivot
+     * @param particles Array of indices.
      * @param lo Lower index of partition.
      * @param hi Higher index of partition.
-     * @param pivot Value to sort particles by. (All lower ones and all higher ones.)
+     * @param pivot Value to sort indices by. (All lower ones and all higher ones.)
      * @param dimension Dimension (0, 1, 2, ...) to partition by.
      * @return index i such that the after condition is fulfilled.
      */
     private int partition(Particle[] particles, int lo, int hi, double pivot, int dimension) {
-        partitions++;
+//        partitions++;
         int i = lo;
         int j = hi;
-        while (true) { comparisons++;
-            while (i <= hi && particles[i].position(dimension) < pivot) i++; comparisons += 2; operations++;
-            while (j >= lo && particles[j].position(dimension) > pivot) j--; comparisons += 2; operations++;
-            if (i >= j) { comparisons++;
+        while (true) { // comparisons++;
+            while (i <= hi && particles[i].position(dimension) < pivot) i++; // comparisons += 2; operations++;
+            while (j >= lo && particles[j].position(dimension) > pivot) j--; // comparisons += 2; operations++;
+            if (i >= j) { // comparisons++;
                 return i;
             }
-            Array.swap(particles, i, j); swaps++;
+            Array.swap(particles, i, j); // swaps++;
         }
     }
 
+    private void buildTree(Node root) {
+        buildTree(0, root);
+        isBuilt = true;
+    }
+
     /**
-     * Recursively builds the BinaryTree with Nodes based on particles.
+     * Recursively builds the BinaryTree with Nodes based on indices.
      * @param dimension Indicates the dimension at which to partition at this level of the recursion.
      * @param currentNode Node on which the algorithm currently acts upon.
      */
@@ -86,16 +97,16 @@ class BinaryTree {
 
         // Recurse
         if (lEnd - lStart >= 0) {
-            currentNode.lChild = new Node(lPosMin, lPosMax, lStart, lEnd, currentNode);
+            currentNode.lChild = new Node(lPosMin, lPosMax, lStart, lEnd, currentNode, this);
             buildTree(nextDimension, currentNode.lChild);
         }
         if (rEnd - rStart >= 0) {
-            currentNode.rChild = new Node(rPosMin, rPosMax, rStart, rEnd, currentNode);
+            currentNode.rChild = new Node(rPosMin, rPosMax, rStart, rEnd, currentNode, this);
             buildTree(nextDimension, currentNode.rChild);
         }
     }
 
-    private int dimensions() {
+    public int dimensions() {
         return particles[0].dimensions();
     }
 
@@ -129,104 +140,50 @@ class BinaryTree {
     }
     @SuppressWarnings("SpellCheckingInspection")
     int ballwalk(double[] pos, double rMax) {
-        return root.ballwalk(pos, Math.pow(rMax, 2));
+        BoxDist2 boxDist2 = BoxDist2.getInstance();
+        return root.ballwalk(pos, Math.pow(rMax, 2), boxDist2);
     }
 
-
     /**
-     * Basic Container for the BinaryTree.
+     * Calculates minimal radius squared including the k nearest neighbours.
+     * @param pos Center from which to search the k nearest neighbours.
+     * @param k Number of particles to search.
+     * @param metric Metric to measure distance.
+     * @return Minimal radius squared.
      */
-    @SuppressWarnings("SpellCheckingInspection")
-    class Node {
-        /**
-         *
-         */
-        double[] posMin, posMax, center;
-        int start, end;
-        Node lChild, rChild;
-        Node parent;
+    IFixedPriorityQueue kNearestNeighbours(double[] pos, int k, IMetric metric) {
+        IFixedPriorityQueue queue = new LinearFixedPriorityQueue(k);
+        kNearestNeighbours(pos, k, root, queue, metric);
+        return queue;
+    }
 
-        Node(double[] posMin, double[] posMax, int start, int end, Node parent) {
-            assert posMax.length == posMin.length;
-            this.posMin = posMin;
-            this.posMax = posMax;
-            this.start = start;
-            this.end = end;
-            this.parent = parent;
-        }
+    void kNearestNeighbours(double[] pos, int k, Node currentNode, IFixedPriorityQueue queue, IMetric<Node> metric) {
+        BoxDist2 dist2 = BoxDist2.getInstance();
 
-        boolean isLeftChild() {
-            return this == parent.lChild;
-        }
-
-        boolean isLeaf() {
-            return !(hasLeft() || hasRight());
-        }
-
-        boolean hasLeft() {
-            return lChild != null;
-        }
-
-        boolean hasRight() {
-            return rChild != null;
-        }
-
-        double dist2(double[] pos){
-            double dist2 = 0;
-            for (int i = 0; i < pos.length; i++){
-                if (pos[i] < posMin[i])
-                    {dist2 += Math.pow(posMin[i] - pos[i], 2); }
-                else if (pos[i] > posMax[i])
-                    {dist2 += Math.pow(posMax[i] - pos[i], 2); }
-                else
-                    {dist2 += 0; }
+        if (currentNode.isLeaf()) {
+            for (int i = currentNode.start; i <= currentNode.end; i++) {
+                queue.insert(particles[i].dist2(pos), i);
             }
-            return dist2;
         }
-
-        int ballwalk(double[] pos, double r2max) {
-            int cnt = 0;
-            if (isLeaf()) {
-                for (int j = start; j <= end; j++){
-                    if (particles[j].dist2(pos) < r2max){
-                        cnt++;
-                    }
+        else if (currentNode.hasLeft() && currentNode.hasRight()) {
+            if (metric.metric(pos, currentNode.lChild) < metric.metric(pos, currentNode.rChild)) {
+                kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
+                if(dist2.metric(pos, currentNode.rChild) < queue.max()) {
+                    kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
                 }
             }
             else {
-                if (lChild.dist2(pos) < r2max){
-                    cnt += lChild.ballwalk(pos, r2max);
-                }
-                if (rChild.dist2(pos) < r2max){
-                    cnt += rChild.ballwalk(pos, r2max);
+                kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
+                if(dist2.metric(pos, currentNode.lChild) < queue.max()) {
+                    kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
                 }
             }
-            return cnt;
         }
-
-        void paint(Graphics g, double scale) {
-            if (isLeaf()) {
-                double x = posMin[0] * scale;
-                double y = posMin[1] * scale;
-                double width = (posMax[0] - posMin[0]) * scale;
-                double height = (posMax[1] - posMin[1]) * scale;
-                Rectangle scaledValues = Drawing.transform(posMin[0], posMin[1], posMax[0] - posMin[0],
-                        posMax[1] - posMin[1], scale);
-                g.setColor(Color.BLACK);
-                g.drawRect(scaledValues.x, scaledValues.y, scaledValues.width, scaledValues.height);
-                Random rand = new Random();
-                g.setColor(new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()));
-                for (int i = start; i <= end; i++) {
-                    particles[i].paint(g, scale, 7);
-                }
-            } else {
-                if (hasLeft()) {
-                    lChild.paint(g, scale);
-                }
-                if (hasRight()) {
-                    rChild.paint(g, scale);
-                }
-            }
+        else if (currentNode.hasLeft() && dist2.metric(pos, currentNode.lChild) < queue.max()) {
+            kNearestNeighbours(pos, k, currentNode.lChild, queue, metric);
+        }
+        else if (dist2.metric(pos, currentNode.rChild) < queue.max()) {
+            kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
         }
 
         void buildTreeImage(DefaultMutableTreeNode parent){

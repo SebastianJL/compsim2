@@ -6,7 +6,7 @@ import utils.IO;
 import java.awt.*;
 import java.util.Random;
 
-class Particle {
+public class Particle {
     private double[] position;
 
     Particle(int dimensions, Random randomGenerator) {
@@ -28,7 +28,7 @@ class Particle {
         return position.clone();
     }
 
-    double position(int i) {
+    public double position(int i) {
         return position[i];
     }
 

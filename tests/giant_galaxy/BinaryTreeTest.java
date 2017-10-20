@@ -24,10 +24,10 @@ class BinaryTreeTest {
 
         for (int i = 0; i < nSimulations; i++) {
             BinaryTree tree = new BinaryTree(2, (int) nParticles[i%modulo], randomGenerator);
-            swaps[i%modulo] += tree.swaps;
-            comparisons[i%modulo] += tree.comparisons;
-            partitions[i%modulo] += tree.partitions;
-            operations[i%modulo] += tree.operations;
+//            swaps[i%modulo] += tree.swaps;
+//            comparisons[i%modulo] += tree.comparisons;
+//            partitions[i%modulo] += tree.partitions;
+//            operations[i%modulo] += tree.operations;
         }
 
         for (int i = 0; i < modulo; i++) {
