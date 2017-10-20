@@ -185,17 +185,6 @@ public class BinaryTree {
         else if (dist2.metric(pos, currentNode.rChild) < queue.max()) {
             kNearestNeighbours(pos, k, currentNode.rChild, queue, metric);
         }
-
-        void buildTreeImage(DefaultMutableTreeNode parent){
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode("start = " + start+", end= "+end);
-            parent.add(node);
-            if(hasLeft()) {
-                lChild.buildTreeImage(node);
-            }
-            if (hasRight()) {
-                rChild.buildTreeImage(node);
-            }
-        }
     }
 }
 

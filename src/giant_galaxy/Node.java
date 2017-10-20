@@ -3,6 +3,7 @@ package giant_galaxy;
 import dist.BoxDist2;
 import utils.Drawing;
 
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.util.Random;
 
@@ -107,6 +108,17 @@ public class Node {
             if (hasRight()) {
                 rChild.paint(g, scale);
             }
+        }
+    }
+
+    void buildTreeImage(DefaultMutableTreeNode parent){
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode("start = " +start+", end= "+end);
+        parent.add(node);
+        if(hasLeft()) {
+            lChild.buildTreeImage(node);
+        }
+        if (hasRight()) {
+            rChild.buildTreeImage(node);
         }
     }
 }

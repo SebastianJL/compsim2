@@ -38,7 +38,7 @@ class GiantGalaxy extends JPanel {
     private void run() {
         Random randomGenerator = new Random();
         randomGenerator.setSeed(10);
-        feature_priority_queue
+        
         tree = new BinaryTree(2, (int) 1e2, randomGenerator);
         int nParticlesInRMax = tree.ballwalk(ballwalkCenter, rMax);
 
