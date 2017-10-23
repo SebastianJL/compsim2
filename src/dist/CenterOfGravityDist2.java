@@ -58,7 +58,11 @@ public class CenterOfGravityDist2 implements IMetric<Node>{
 
     public double[] CombinedCenterOfGravity
             (double lMass, double rMass, double[] lCoG, double[] rCoG){
-        return [1,2,3] //Attention: wrong definition of CoG
+        double[] CCoG = new double[lCoG.length];
+        for(int i=0; i < CCoG.length; i++){
+            CCoG[i] = (lMass*lCoG[i]+rMass*rCoG[i])/(lMass+rMass);
+        }
+        return CCoG; //Attention: wrong definition of CoG
     }
 
     public double RMaxFromCoG(double[] centerOfGravity, Particle[] particles){
@@ -82,4 +86,48 @@ public class CenterOfGravityDist2 implements IMetric<Node>{
             return rDistance+RRMax;
         }
     }
+
+    public double[][] multiPoleM(Particle[] particles, double[] CoG){
+        double[][] multiPoleM = new double[CoG.length][CoG.length];
+        for (Particle particle : particles) {
+            for(int j=0; j < CoG.length; j++){
+                for(int k=j; k < CoG.length; k++){
+                    multiPoleM[j][k] += particle.mass()*(particle.position(j)-CoG[j])*(particle.position(k)-CoG[k]);
+                    multiPoleM[k][j] = multiPoleM[j][k];
+                }
+            }
+
+        }
+        return multiPoleM;
+    }
+
+    public double[][] combMultiPoleM(double lMass, double[] lCoG, double[][] lMultiPoleM, double rMass, double[] rCoG, double[][] rMultiPoleM, double[] CoG) {
+        double[][] combMultiPoleM = new double[CoG.length][CoG.length];
+        double S_jk = 0;
+        for(int j=0; j < CoG.length; j++){
+            for(int k=j; k < CoG.length; k++){
+                //left
+                S_jk = (lCoG[j]-CoG[j])*(lCoG[k]-CoG[k]);
+                combMultiPoleM[j][k] = S_jk*lMass-lMultiPoleM[j][k];
+
+                //right
+                S_jk = (rCoG[j]-CoG[j])*(rCoG[k]-CoG[k]);
+                combMultiPoleM[j][k] += S_jk*rMass-rMultiPoleM[j][k];
+
+                //symmetric!
+                combMultiPoleM[k][j] = combMultiPoleM[j][k];
+            }
+        }
+        return combMultiPoleM;
+    }
+
+    public double trace(double[][] multMoment){
+        double trace = 0;
+        for (int i =0; i<multMoment[0].length;i++){
+            trace += multMoment[i][i];
+        }
+        return trace;
+    }
+
+
 }

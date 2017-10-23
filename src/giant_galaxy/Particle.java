@@ -57,10 +57,10 @@ public class Particle {
         return dist2;
     }
 
-    public double[] vect(Particle particle){
-        double[] vect = new double[particle.dimensions()];
-        for(int i=0; i<particle.position;i++) {
-            vect[i] = particle.position[i] - this.position[i];
+    public double[] vect(double[] position){
+        double[] vect = new double[position.length];
+        for(int i =0; i<position.length;i++) {
+            vect[i] = position[i] - this.position[i];
         }
         return vect;
     }

@@ -13,7 +13,7 @@ public class Interaction {
     public double theta = 0.12;
 
     double[] calcForce(Particle particle, Particle[] particles, Node currentNode, double[] force) {
-        Gravity gravityObj = new Gravity();
+        Gravity interActionObj = new Gravity();
 
         //behaviour if particle is in own leaf
         if (currentNode.isOwnLeaf(particle.number)) {
@@ -24,23 +24,29 @@ public class Interaction {
                         force[i] += 0;
                     }
                 } else {
-                    double[] new_force = gravityObj.force(particles[pNumber], particle);
+                    double[] new_force = interActionObj.force(particles[pNumber], particle);
                     for (int j = 0; j < force.length; j++) {
                         force[j] += new_force[j];
                     }
                 }
             }
             return force;
+
         } else if (currentNode.isLeaf()) {
             for (int i = currentNode.start; i < currentNode.end; i++) {
-                double[] new_force = gravityObj.force(particles[i], particle);
+                double[] new_force = interActionObj.force(particles[i], particle);
                 for (int j = 0; j < force.length; j++) {
                     force[j] += new_force[j];
                 }
             }
             return force;
+
         } else if (theta > currentNode.RMax / particle.dist2(currentNode.centerOfGravity)) {
             // accept multipole
+            double[] newForce = interActionObj.force(particle, currentNode);
+            for (int i = 0; i<force.length;i++){
+                force[i] += newForce[i];
+            }
             return force;
         }
 

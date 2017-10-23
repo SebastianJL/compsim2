@@ -25,6 +25,8 @@ public class Node {
     public double[] centerOfGravity;
     public double RMax;
     public double mass;
+    public double trace;
+    public double[][] multMoment;
     public Node lChild, rChild;
     public Node parent;
 

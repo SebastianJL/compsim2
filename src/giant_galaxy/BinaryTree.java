@@ -101,7 +101,7 @@ public class BinaryTree {
         CenterOfGravityDist2 cOgObject = CenterOfGravityDist2.getInstance();
 
         //Particle array slicing
-        Particle[] nodeParticles = Arrays.copyOfRange(particles, currentNode.start, currentNode.end)
+        Particle[] nodeParticles = Arrays.copyOfRange(particles, currentNode.start, currentNode.end);
 
         // Recurse
         if (lEnd - lStart >= 0) {
@@ -124,6 +124,7 @@ public class BinaryTree {
             currentNode.centerOfGravity = cOgObject.centerOfGravity
                     (nodeParticles,dimensions());
             currentNode.RMax = cOgObject.RMaxFromCoG(currentNode.centerOfGravity, nodeParticles);
+            currentNode.multMoment = cOgObject.multiPoleM(nodeParticles, currentNode.centerOfGravity);
         }
         else {
             if(currentNode.hasLeft() && currentNode.hasRight()){
@@ -133,19 +134,25 @@ public class BinaryTree {
                                 currentNode.lChild.centerOfGravity, currentNode.rChild.centerOfGravity);
                 currentNode.RMax = cOgObject.CombinedRMaxFromCombinedCoG
                         (currentNode.lChild.centerOfGravity, currentNode.rChild.centerOfGravity,
-                        currentNode.centerOfGravity,
-                        currentNode.lChild.RMax, currentNode.rChild.RMax);
-
+                                currentNode.centerOfGravity, currentNode.lChild.RMax, currentNode.rChild.RMax);
+                currentNode.multMoment = cOgObject.combMultiPoleM(currentNode.lChild.mass, currentNode.lChild.centerOfGravity,currentNode.lChild.multMoment,
+                        currentNode.rChild.mass, currentNode.rChild.centerOfGravity, currentNode.rChild.multMoment,currentNode.centerOfGravity);
+                currentNode.trace = cOgObject.trace(currentNode.multMoment);
             }
             else if(currentNode.hasRight()){
                 currentNode.mass = currentNode.rChild.mass;
                 currentNode.centerOfGravity = currentNode.rChild.centerOfGravity;
                 currentNode.RMax = currentNode.rChild.RMax;
+                currentNode.multMoment = currentNode.rChild.multMoment;
+                currentNode.trace = cOgObject.trace(currentNode.multMoment);
+
             }
             else{
                 currentNode.mass = currentNode.lChild.mass;
                 currentNode.centerOfGravity = currentNode.lChild.centerOfGravity;
                 currentNode.RMax = currentNode.lChild.RMax;
+                currentNode.multMoment = currentNode.lChild.multMoment;
+                currentNode.trace = cOgObject.trace(currentNode.multMoment);
 
             }
         }
