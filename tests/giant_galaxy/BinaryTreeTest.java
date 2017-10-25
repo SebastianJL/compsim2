@@ -1,5 +1,8 @@
 package giant_galaxy;
 
+import distributionGenerators.IGenerator;
+import distributionGenerators.NormalGenerator;
+import distributionGenerators.UniformGenerator;
 import utils.IO;
 
 import java.util.Random;
@@ -7,7 +10,7 @@ import java.util.Random;
 class BinaryTreeTest {
 
     public static void main(String[] args) {
-        Random randomGenerator = new Random();
+        IGenerator randomGenerator = new UniformGenerator();
         randomGenerator.setSeed(10);
         int nSimulations = 1000;
         double[] nParticles = new double[]{

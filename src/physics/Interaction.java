@@ -24,19 +24,19 @@ public class Interaction {
                         force[i] += 0;
                     }
                 } else {
-                    double[] new_force = interActionObj.force(particles[pNumber], particle);
+                    double[] new_force = interActionObj.force(particle, particles[pNumber]);
                     for (int j = 0; j < force.length; j++) {
-                        force[j] += new_force[j];
+                        force[j] -= new_force[j];
                     }
                 }
             }
             return force;
-
+        //if not in own leaf
         } else if (currentNode.isLeaf()) {
             for (int i = currentNode.start; i < currentNode.end; i++) {
-                double[] new_force = interActionObj.force(particles[i], particle);
+                double[] new_force = interActionObj.force(particle, particles[i]);
                 for (int j = 0; j < force.length; j++) {
-                    force[j] += new_force[j];
+                    force[j] -= new_force[j];
                 }
             }
             return force;
@@ -45,7 +45,7 @@ public class Interaction {
             // accept multipole
             double[] newForce = interActionObj.force(particle, currentNode);
             for (int i = 0; i<force.length;i++){
-                force[i] += newForce[i];
+                force[i] -= newForce[i];
             }
             return force;
         }

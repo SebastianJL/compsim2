@@ -6,10 +6,12 @@ import utils.IO;
 
 public class Gravity {
 
+    double epsilon = 0.002;
+
     double[] force(Particle particle1, Particle particle2){
         double[] force = particle1.vect(particle2.position());
         for (int i = 0; i < force.length; i++) {
-            force[i] *= particle1.mass() * particle2.mass() / particle1.dist2(particle2.position());
+            force[i] = (particle1.mass() * particle2.mass()) / (particle1.dist2(particle2.position()) + epsilon );
         }
         return force;
     }

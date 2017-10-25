@@ -3,6 +3,11 @@ package giant_galaxy;
 import dist.BoxDist2;
 import dist.CenterOfGravityDist2;
 import dist.IMetric;
+import distributionGenerators.IGenerator;
+import distributionGenerators.NormalGenerator;
+import distributionGenerators.UniformGenerator;
+import physics.Interaction;
+import physics.TimeEvolution;
 import utils.Drawing;
 import utils.IO;
 
@@ -24,35 +29,44 @@ class GiantGalaxy extends JPanel {
     public static void main(String[] argv) {
         GiantGalaxy galaxy = new GiantGalaxy();
 
-        JFrame top = new JFrame("Galaxy");
-
-        top.setBounds(0, 0, 900, 900);
-        top.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        top.getContentPane().add(galaxy);
+//        JFrame top = new JFrame("Galaxy");
+//
+//        top.setBounds(0, 0, 900, 900);
+//        top.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        top.getContentPane().add(galaxy);
 
         System.out.println("Start the engine");
         galaxy.run();
-        top.setVisible(true);
+//        top.setVisible(true);
     }
 
     private void run() {
-        Random randomGenerator = new Random();
+        IGenerator randomGenerator = new NormalGenerator();
         randomGenerator.setSeed(10);
-        
+
+        Interaction interaction = new Interaction();
         tree = new BinaryTree(2, (int) 1e2, randomGenerator);
-        int nParticlesInRMax = tree.ballwalk(ballwalkCenter, rMax);
+
+        TimeEvolution timeEvolution = new TimeEvolution(interaction, tree);
+//
+        double timeStep = 0.0000001d;
+        double endTime = 100d;
+
+        timeEvolution.run(timeStep, endTime);
+        
+//        int nParticlesInRMax = tree.ballwalk(ballwalkCenter, rMax);
 
 //        IMetric cogDist2 = CenterOfGravityDist2.getInstance();
 //        queue = tree.kNearestNeighbours(ballwalkCenter, nParticlesInRMax, cogDist2);
 //
-        IMetric boxDist2 = BoxDist2.getInstance();
-        queue = tree.kNearestNeighbours(ballwalkCenter, nParticlesInRMax, boxDist2);
-
-        rKNN = Math.sqrt(queue.max());
-        IO.print("nParticlesInRMax: " + nParticlesInRMax);
-        IO.print("rMax: " + rMax);
-        IO.print("rKNN: " + rKNN);
-        repaint();
+//        IMetric boxDist2 = BoxDist2.getInstance();
+//        queue = tree.kNearestNeighbours(ballwalkCenter, nParticlesInRMax, boxDist2);
+//
+//        rKNN = Math.sqrt(queue.max());
+//        IO.print("nParticlesInRMax: " + nParticlesInRMax);
+//        IO.print("rMax: " + rMax);
+//        IO.print("rKNN: " + rKNN);
+//        repaint();
     }
 
 
@@ -76,16 +90,17 @@ class GiantGalaxy extends JPanel {
                     scale, true);
             g.drawOval(ballwalkCoords.x, ballwalkCoords.y, ballwalkCoords.width, ballwalkCoords.height);
 
-            // Draw circle for kNN
-            Rectangle kNNCoords = Drawing.transform(ballwalkCenter[0], ballwalkCenter[1], 2 * rKNN, 2 * rKNN,
-                    scale, true);
-            g.setColor(Color.RED);
-            g.drawOval(kNNCoords.x, kNNCoords.y, kNNCoords.width, kNNCoords.height);
+//            // Draw circle for kNN
+//            Rectangle kNNCoords = Drawing.transform(ballwalkCenter[0], ballwalkCenter[1], 2 * rKNN, 2 * rKNN,
+//                    scale, true);
+//            g.setColor(Color.RED);
+//            g.drawOval(kNNCoords.x, kNNCoords.y, kNNCoords.width, kNNCoords.height);
+//
+//            // Draw particles in rKNN
+//            for (int i : queue.indices()) {
+//                tree.particles[i].paint(g, scale, 8);
+//            }
 
-            // Draw particles in rKNN
-            for (int i : queue.indices()) {
-                tree.particles[i].paint(g, scale, 8);
-            }
         }
     }
 

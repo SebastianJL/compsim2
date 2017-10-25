@@ -3,7 +3,9 @@ package giant_galaxy;
 import dist.BoxDist2;
 import dist.CenterOfGravityDist2;
 import dist.IMetric;
+import distributionGenerators.IGenerator;
 import utils.Array;
+import utils.IO;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -12,7 +14,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class BinaryTree {
 
-    private final Node root;
+    public final Node root;
     public final Particle[] particles;
     private boolean isBuilt = false;
 //    int swaps = 0;
@@ -20,7 +22,7 @@ public class BinaryTree {
 //    int operations = 0;
 //    int partitions = 0;
 
-    BinaryTree(int dimensions, int nParticles, Random randomGenerator) {
+    BinaryTree(int dimensions, int nParticles, IGenerator randomGenerator) {
         particles = new Particle[nParticles];
         for (int i = 0; i < particles.length; i++) {
             particles[i] = new Particle(dimensions, randomGenerator);
@@ -63,7 +65,7 @@ public class BinaryTree {
         }
     }
 
-    private void buildTree(Node root) {
+    public void buildTree(Node root) {
         buildTree(0, root);
         isBuilt = true;
     }
@@ -74,8 +76,24 @@ public class BinaryTree {
      * @param currentNode Node on which the algorithm currently acts upon.
      */
     @SuppressWarnings("UnnecessaryLocalVariable")
-    private void buildTree(int dimension, Node currentNode) {
+    public void buildTree(int dimension, Node currentNode) {
+
+        //Particle array slicing
+        Particle[] nodeParticles = Arrays.copyOfRange(particles, currentNode.start, currentNode.end);
+
+        //Create CoG object
+        CenterOfGravityDist2 cOgObject = CenterOfGravityDist2.getInstance();
+
         if (currentNode.end - currentNode.start < 8) {
+            int j = currentNode.start;
+            for (Particle nodeParticle : nodeParticles) {
+                nodeParticle.number  = j++;
+            }
+            currentNode.mass = cOgObject.mass(nodeParticles);
+            currentNode.centerOfGravity = cOgObject.centerOfGravity
+                    (nodeParticles,dimensions());
+            currentNode.RMax = cOgObject.RMaxFromCoG(currentNode.centerOfGravity, nodeParticles);
+            currentNode.multMoment = cOgObject.multiPoleM(nodeParticles, currentNode.centerOfGravity);
             return;
         }
 
@@ -97,12 +115,6 @@ public class BinaryTree {
         int rStart = i;
         int rEnd = currentNode.end;
 
-        //Create CoG object
-        CenterOfGravityDist2 cOgObject = CenterOfGravityDist2.getInstance();
-
-        //Particle array slicing
-        Particle[] nodeParticles = Arrays.copyOfRange(particles, currentNode.start, currentNode.end);
-
         // Recurse
         if (lEnd - lStart >= 0) {
             currentNode.lChild = new Node(lPosMin, lPosMax, lStart, lEnd, currentNode, this);
@@ -113,48 +125,34 @@ public class BinaryTree {
             buildTree(nextDimension, currentNode.rChild);
         }
 
-
         // Going up again. Fill gravity stuff
-        if (currentNode.isLeaf()){
-            int j = currentNode.start;
-            for (Particle nodeParticle : nodeParticles) {
-                nodeParticle.number  = j++;
-            }
-            currentNode.mass = cOgObject.mass(nodeParticles);
-            currentNode.centerOfGravity = cOgObject.centerOfGravity
-                    (nodeParticles,dimensions());
-            currentNode.RMax = cOgObject.RMaxFromCoG(currentNode.centerOfGravity, nodeParticles);
-            currentNode.multMoment = cOgObject.multiPoleM(nodeParticles, currentNode.centerOfGravity);
+        if(currentNode.hasLeft() && currentNode.hasRight()){
+            currentNode.mass = currentNode.lChild.mass + currentNode.rChild.mass;
+            currentNode.centerOfGravity = cOgObject.CombinedCenterOfGravity
+                    (currentNode.lChild.mass, currentNode.rChild.mass,
+                            currentNode.lChild.centerOfGravity, currentNode.rChild.centerOfGravity);
+            currentNode.RMax = cOgObject.CombinedRMaxFromCombinedCoG
+                    (currentNode.lChild.centerOfGravity, currentNode.rChild.centerOfGravity,
+                            currentNode.centerOfGravity, currentNode.lChild.RMax, currentNode.rChild.RMax);
+            currentNode.multMoment = cOgObject.combMultiPoleM(currentNode.lChild.mass, currentNode.lChild.centerOfGravity,currentNode.lChild.multMoment,
+                    currentNode.rChild.mass, currentNode.rChild.centerOfGravity, currentNode.rChild.multMoment,currentNode.centerOfGravity);
+            currentNode.trace = cOgObject.trace(currentNode.multMoment);
         }
-        else {
-            if(currentNode.hasLeft() && currentNode.hasRight()){
-                currentNode.mass = currentNode.lChild.mass + currentNode.rChild.mass;
-                currentNode.centerOfGravity = cOgObject.CombinedCenterOfGravity
-                        (currentNode.lChild.mass, currentNode.rChild.mass,
-                                currentNode.lChild.centerOfGravity, currentNode.rChild.centerOfGravity);
-                currentNode.RMax = cOgObject.CombinedRMaxFromCombinedCoG
-                        (currentNode.lChild.centerOfGravity, currentNode.rChild.centerOfGravity,
-                                currentNode.centerOfGravity, currentNode.lChild.RMax, currentNode.rChild.RMax);
-                currentNode.multMoment = cOgObject.combMultiPoleM(currentNode.lChild.mass, currentNode.lChild.centerOfGravity,currentNode.lChild.multMoment,
-                        currentNode.rChild.mass, currentNode.rChild.centerOfGravity, currentNode.rChild.multMoment,currentNode.centerOfGravity);
-                currentNode.trace = cOgObject.trace(currentNode.multMoment);
-            }
-            else if(currentNode.hasRight()){
-                currentNode.mass = currentNode.rChild.mass;
-                currentNode.centerOfGravity = currentNode.rChild.centerOfGravity;
-                currentNode.RMax = currentNode.rChild.RMax;
-                currentNode.multMoment = currentNode.rChild.multMoment;
-                currentNode.trace = cOgObject.trace(currentNode.multMoment);
+        else if(currentNode.hasRight()){
+            currentNode.mass = currentNode.rChild.mass;
+            currentNode.centerOfGravity = currentNode.rChild.centerOfGravity;
+            currentNode.RMax = currentNode.rChild.RMax;
+            currentNode.multMoment = currentNode.rChild.multMoment;
+            currentNode.trace = cOgObject.trace(currentNode.multMoment);
 
-            }
-            else{
-                currentNode.mass = currentNode.lChild.mass;
-                currentNode.centerOfGravity = currentNode.lChild.centerOfGravity;
-                currentNode.RMax = currentNode.lChild.RMax;
-                currentNode.multMoment = currentNode.lChild.multMoment;
-                currentNode.trace = cOgObject.trace(currentNode.multMoment);
+        }
+        else{
+            currentNode.mass = currentNode.lChild.mass;
+            currentNode.centerOfGravity = currentNode.lChild.centerOfGravity;
+            currentNode.RMax = currentNode.lChild.RMax;
+            currentNode.multMoment = currentNode.lChild.multMoment;
+            currentNode.trace = cOgObject.trace(currentNode.multMoment);
 
-            }
         }
     }
 
@@ -163,17 +161,17 @@ public class BinaryTree {
     }
 
 
-    double[] posMin() {
+    public double[] posMin() {
         return root.posMin.clone();
     }
-    double posMin(int index) {
+    public double posMin(int index) {
         return root.posMin[index];
     }
 
-    double[] posMax() {
+    public double[] posMax() {
         return root.posMax.clone();
     }
-    double posMax(int index) {
+    public double posMax(int index) {
         return root.posMax[index];
     }
 
@@ -182,7 +180,7 @@ public class BinaryTree {
      * @param g Graphic from JPanel in which to paint.
      * @param scale Scale for drawing.
      */
-    void paint(Graphics g, double scale) {
+    public void paint(Graphics g, double scale) {
         root.paint(g, scale);
         g.setColor(Color.BLUE);
     }

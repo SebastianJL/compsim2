@@ -1,5 +1,6 @@
 package giant_galaxy;
 
+import distributionGenerators.IGenerator;
 import utils.Drawing;
 import utils.IO;
 
@@ -8,22 +9,27 @@ import java.util.Random;
 
 public class Particle {
     private double[] position;
+    private double[] velocity;
 
     private final double mass;
 
     public int number;
 
-    Particle(int dimensions, Random randomGenerator) {
+    Particle(int dimensions, IGenerator randomGenerator) {
         this.position = new double[dimensions];
+
         for (int i = 0; i < position.length; i++) {
-            position[i] = randomGenerator.nextDouble();
+            position[i] = randomGenerator.next();
         }
-        mass = 1; // !!?!
+        mass = 1;
+        this.velocity = new double[dimensions()];
+
     }
 
     public Particle(double[] coordinates) {
         this.position = coordinates;
-        this.mass = 1; // !!?!
+        this.mass = 1;
+        this.velocity = new double[dimensions()];
     }
 
     int dimensions() {
@@ -34,11 +40,24 @@ public class Particle {
         return position.clone();
     }
 
-    public double position(int i) {
-        return position[i];
+    public double position(int i) { return position[i]; }
+
+    public void addToPosition(int i, double position) {
+        this.position[i] += position;
+    }
+
+    public double[] velocity() { return velocity.clone(); }
+
+    public double velocity(int i) { return velocity[i]; }
+
+    public void addToVelocity(int i, double velocity) {
+        this.velocity[i] += velocity;
     }
 
     public double mass() { return mass; }
+
+
+
 
     public String toString() {
         return IO.toString(position);
