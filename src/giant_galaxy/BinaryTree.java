@@ -63,7 +63,14 @@ public class BinaryTree {
         }
     }
 
+    public void buildTree() {
+        buildTree(this.root);
+    }
+
     public void buildTree(Node root) {
+        root.lChild = null;
+        root.rChild = null;
+        isBuilt = false;
         buildTree(0, root);
         isBuilt = true;
     }

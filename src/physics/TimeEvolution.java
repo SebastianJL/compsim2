@@ -36,7 +36,7 @@ public class TimeEvolution extends JPanel {
         double time = 0;
         while(time<endTime){
             leapFrog(timeStep, particles, tree);
-            tree.buildTree(tree.root);
+            tree.buildTree();
             time += timeStep;
 
             try {
@@ -66,9 +66,9 @@ public class TimeEvolution extends JPanel {
         }
 
         //drift
-        double[] nullForce = new double[particles[0].position().length];
+        double[] force = new double[particles[0].position().length];
         for (int i=0; i<particles.length; i++) {
-            double[] force = interaction.calcForce(particles[i], particles, tree.root, nullForce );
+            interaction.calcForce(particles[i], particles, tree.root, force);
 
             for (int dim=0; dim<particles[i].position().length; dim++) {
                 particles[i].addToVelocity(dim, timeStep*force[dim]/particles[i].mass());

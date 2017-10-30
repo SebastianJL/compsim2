@@ -7,7 +7,7 @@ import utils.IO;
 public class Interaction {
 
     // Precision factor
-    public double theta = 0.12;
+    public double theta = 1;
 
     /**
      * Calculate updateForce on one particle from all others contained in currentNode.
