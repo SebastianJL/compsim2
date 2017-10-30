@@ -23,17 +23,21 @@ public class Gravity {
         double dist3 = Math.pow(dist, 3);
         double dist5 = Math.pow(dist, 5);
         double dist7 = Math.pow(dist, 7);
-        double rM;
-        double rM2;
+        double rjk_Mjk = 0;
+        double rk_Mlk;
+
+        for (int j = 0; j < force.length; j++) {
+            for (int k = 0; k < force.length; k++) {
+                    rjk_Mjk += r[j] * r[k] * node.multMoment[j][k];
+            }
+        }
 
         for (int l = 0; l < force.length; l++){ // all dimensions
-            for (int k=0; k < force.length; k++) { // first multipole index
-                rM2 = 2*r[k]*node.multMoment[k][l];
-                for (int j = 0; j < force.length; j++) { // second multipole index
-                    rM = r[j] * r[k] * node.multMoment[j][k];
-                    force[l] += r[l]*node.mass/dist3 - 3/dist5*(r[l]*node.trace + rM2) + 15/dist7*r[l]*rM;
-                }
+            rk_Mlk = 0;
+            for (int k = 0; k < force.length; k++) { // first multipole index
+                rk_Mlk += 2*r[k]*node.multMoment[k][l];
             }
+            force[l] += r[l]*node.mass/dist3 - 3/dist5*(r[l]*node.trace + rk_Mlk) + 15/dist7*r[l]*rjk_Mjk;
         }
     }
 }
