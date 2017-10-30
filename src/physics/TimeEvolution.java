@@ -12,13 +12,11 @@ public class TimeEvolution extends JPanel {
 
 
     Interaction interaction;
-    Particle[] particles;
     BinaryTree tree;
 
     public TimeEvolution(Interaction interaction, BinaryTree tree){
 
         this.interaction = interaction;
-        this.particles = tree.particles;
         this.tree = tree;
 
 
@@ -35,7 +33,7 @@ public class TimeEvolution extends JPanel {
 
         double time = 0;
         while(time<endTime){
-            leapFrog(timeStep, particles, tree);
+            leapFrog(timeStep, tree);
             tree.buildTree();
             time += timeStep;
 
@@ -53,11 +51,8 @@ public class TimeEvolution extends JPanel {
     }
 
 
-    public void leapFrog(double timeStep, Particle[] particles, BinaryTree tree) {
-
-//        double[][][] result = new double[2][bodies.length][3];
-
-
+    public void leapFrog(double timeStep, BinaryTree tree) {
+        Particle[] particles = tree.particles;
         //kick
         for (int i=0; i<particles.length; i++) {
             for (int dim=0; dim<particles[i].position().length; dim++) {
@@ -81,7 +76,6 @@ public class TimeEvolution extends JPanel {
                 particles[i].addToPosition(dim, 0.5*timeStep*particles[i].velocity(dim));
             }
         }
-
     }
 
 
