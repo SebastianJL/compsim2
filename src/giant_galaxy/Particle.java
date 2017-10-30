@@ -13,7 +13,7 @@ public class Particle {
 
     private final double mass;
 
-    public int number;
+    public int index; // describes particle index in particles array of binarytree when isBuilt==true
 
     Particle(int dimensions, IGenerator randomGenerator) {
         this.position = new double[dimensions];
@@ -76,10 +76,15 @@ public class Particle {
         return dist2;
     }
 
-    public double[] vect(double[] position){
-        double[] vect = new double[position.length];
-        for(int i =0; i<position.length;i++) {
-            vect[i] = position[i] - this.position[i];
+    /**
+     * Distance vector from this to other.
+     * @param other Vector describing position of other.
+     * @return Distance vector.
+     */
+    public double[] vect(double[] other){
+        double[] vect = new double[other.length];
+        for(int i =0; i<other.length;i++) {
+            vect[i] = other[i] - this.position[i];
         }
         return vect;
     }
