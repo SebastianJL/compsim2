@@ -58,23 +58,5 @@ public class Gravity {
             return -(2*m+1)/Math.pow(r,2)*greenFkt(r,m);
         }
     }
-
-
-//    double[] ownLeafForce(Particle particle1, Particle particle2){
-//        double[] updateForce = particle1.vect(particle2);
-//        double dist2 = particle1.dist2(particle2.position());
-//        if (dist2 == 0) {
-//            for (int i = 0; i < updateForce.length; i++) {
-//                updateForce[i] = 0;
-//            }
-//            return updateForce;
-//        }
-//        else {
-//            for (int i = 0; i < updateForce.length; i++) {
-//                updateForce[i] *= particle1.mass() * particle2.mass() / particle1.dist2(particle2.position());
-//            }
-//            return updateForce;
-//        }
-//    }
 }
 
