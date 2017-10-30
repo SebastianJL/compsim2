@@ -36,27 +36,5 @@ public class Gravity {
             }
         }
     }
-
-    double greenFkt(double r, int m){
-        /**
-         * calculate multipoles by recursion
-         */
-        if(r==0){
-            IO.print("diving by zero!");
-            return 0;
-        }
-        if(m<0){
-            IO.print("m smaller than 0!");
-            return 0;
-        }
-
-        if(m==0){
-            return -1./r;
-        }
-        else{
-            m -= 1;
-            return -(2*m+1)/Math.pow(r,2)*greenFkt(r,m);
-        }
-    }
 }
 
