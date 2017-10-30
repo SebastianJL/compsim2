@@ -8,33 +8,33 @@ public class Gravity {
 
     double epsilon = 0.002;
 
-    double[] force(Particle particle1, Particle particle2){
-        double[] force = particle1.vect(particle2.position());
-        for (int i = 0; i < force.length; i++) {
-            force[i] = (particle1.mass() * particle2.mass()) / (particle1.dist2(particle2.position()) + epsilon );
+
+    void updateForce(Particle particle1, Particle particle2, double[] force){
+        double[] r = particle1.vect(particle2.position()); // r2 - r1
+
+        for (int i = 0; i < r.length; i++) {
+            force[i] += r[i]*particle1.mass()*particle2.mass()/(particle1.dist(particle2.position(), 3) + epsilon);
         }
-        return force;
     }
 
-    double[] force(Particle particle1, Node node){
-        double[] force = new double[particle1.position().length];
+    void updateForce(Particle particle1, Node node, double[] force){
         double[] r = particle1.vect(node.centerOfGravity);
-        double dist = Math.sqrt(particle1.dist2(node.centerOfGravity));
-        double rM = 0;
-        double rM2 = 0;
+        double dist = particle1.dist(node.centerOfGravity, 1);
+        double dist3 = Math.pow(dist, 3);
+        double dist5 = Math.pow(dist, 5);
+        double dist7 = Math.pow(dist, 7);
+        double rM;
+        double rM2;
 
-
-        for (int l =0; l<force.length; l++){
-            for (int k=0; k<force.length; k++) {
+        for (int l = 0; l < force.length; l++){ // all dimensions
+            for (int k=0; k < force.length; k++) { // first multipole index
                 rM2 = 2*r[k]*node.multMoment[k][l];
-                for (int j = k; j < force.length; j++) {
+                for (int j = 0; j < force.length; j++) { // second multipole index
                     rM = r[j] * r[k] * node.multMoment[j][k];
-                    force[l] = node.mass/Math.pow(dist, 3) - 3/Math.pow(dist, 5)*(r[l]*node.trace + rM2) + 15/Math.pow(dist,7)*r[l]*rM;
+                    force[l] += r[l]*node.mass/dist3 - 3/dist5*(r[l]*node.trace + rM2) + 15/dist7*r[l]*rM;
                 }
             }
         }
-
-        return force;
     }
 
     double greenFkt(double r, int m){
@@ -61,19 +61,19 @@ public class Gravity {
 
 
 //    double[] ownLeafForce(Particle particle1, Particle particle2){
-//        double[] force = particle1.vect(particle2);
+//        double[] updateForce = particle1.vect(particle2);
 //        double dist2 = particle1.dist2(particle2.position());
 //        if (dist2 == 0) {
-//            for (int i = 0; i < force.length; i++) {
-//                force[i] = 0;
+//            for (int i = 0; i < updateForce.length; i++) {
+//                updateForce[i] = 0;
 //            }
-//            return force;
+//            return updateForce;
 //        }
 //        else {
-//            for (int i = 0; i < force.length; i++) {
-//                force[i] *= particle1.mass() * particle2.mass() / particle1.dist2(particle2.position());
+//            for (int i = 0; i < updateForce.length; i++) {
+//                updateForce[i] *= particle1.mass() * particle2.mass() / particle1.dist2(particle2.position());
 //            }
-//            return force;
+//            return updateForce;
 //        }
 //    }
 }
