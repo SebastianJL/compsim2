@@ -17,8 +17,8 @@ public class NormalGenerator extends Random implements IGenerator{
 
     public NormalGenerator(){
         super();
-        this.mean = 0.8;
-        this.standardDev = 0.06;
+        this.mean = 0.5;
+        this.standardDev = 0.1;
     }
 
 
