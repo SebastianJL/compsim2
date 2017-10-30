@@ -5,11 +5,9 @@ import dist.CenterOfGravityDist2;
 import dist.IMetric;
 import distributionGenerators.IGenerator;
 import utils.Array;
-import utils.IO;
 
 import java.awt.*;
 import java.util.Arrays;
-import java.util.Random;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class BinaryTree {
@@ -87,7 +85,7 @@ public class BinaryTree {
         if (currentNode.end - currentNode.start < 8) {
             int j = currentNode.start;
             for (Particle nodeParticle : nodeParticles) {
-                nodeParticle.number  = j++;
+                nodeParticle.index = j++;
             }
             currentNode.mass = cOgObject.mass(nodeParticles);
             currentNode.centerOfGravity = cOgObject.centerOfGravity

@@ -51,7 +51,7 @@ public class Node {
         return !(hasLeft() || hasRight());
     }
 
-    public boolean isOwnLeaf(int pNumber) { return (pNumber >= start && pNumber <= end); }
+    public boolean contains(int pNumber) { return (pNumber >= start && pNumber <= end); }
 
     public boolean hasLeft() {
         return lChild != null;
