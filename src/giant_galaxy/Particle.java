@@ -76,6 +76,10 @@ public class Particle {
         return dist2;
     }
 
+    public double dist3(double[] pos) {
+        return Math.pow(dist2(pos), 3d/2);
+    }
+
     /**
      * Distance vector from this to other.
      * @param other Vector describing position of other.
