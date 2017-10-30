@@ -68,6 +68,11 @@ public class Particle {
         g.fillRect(scaledValues.x, scaledValues.y, scaledValues.width, scaledValues.height);
     }
 
+    /**
+     * Optimized dist function for distance squared.
+     * @param pos Position to which to calculate distance.
+     * @return
+     */
     public double dist2(double[] pos){
         double dist2 = 0;
         for (int i = 0; i < dimensions(); i++){
@@ -76,8 +81,14 @@ public class Particle {
         return dist2;
     }
 
-    public double dist3(double[] pos) {
-        return Math.pow(dist2(pos), 3d/2);
+    /**
+     * General distance function for distance to the power of n.
+     * @param pos Position to which to calculate distance.
+     * @param power Power to which to raise the distance.
+     * @return
+     */
+    public double dist(double[] pos, int power) {
+        return Math.pow(dist2(pos), (double)(power)/2);
     }
 
     /**
