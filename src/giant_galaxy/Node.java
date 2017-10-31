@@ -105,7 +105,7 @@ public class Node {
             g.setColor(Color.BLACK);
             g.drawRect(scaledValues.x, scaledValues.y, scaledValues.width, scaledValues.height);
             Random rand = new Random();
-            g.setColor(new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()));
+//            g.setColor(new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()));
             for (int i = start; i <= end; i++) {
                 tree.particles[i].paint(g, scale, 7);
             }

@@ -41,15 +41,15 @@ class GiantGalaxy extends JPanel {
     }
 
     private void run() {
-        IGenerator randomGenerator = new NormalGenerator();
+        IGenerator randomGenerator = new UniformGenerator();
         randomGenerator.setSeed(10);
 
         Interaction interaction = new Interaction();
-        tree = new BinaryTree(2, (int) 1e2, randomGenerator);
+        tree = new BinaryTree(2, (int) 1e3, randomGenerator);
 
         TimeEvolution timeEvolution = new TimeEvolution(interaction, tree);
 //
-        double timeStep = 0.0000001d;
+        double timeStep = 0.0001d;
         double endTime = 100d;
 
         timeEvolution.run(timeStep, endTime);

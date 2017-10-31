@@ -33,19 +33,20 @@ public class TimeEvolution extends JPanel {
 
         double time = 0;
         while(time<endTime){
-            leapFrog(timeStep, tree);
-            tree.buildTree();
-            time += timeStep;
+            for (int i = 0; i < 5; i++) {
+                leapFrog(timeStep, tree);
+                time += timeStep;
+            }
 
+            repaint();
             try {
                 //wait after every calculation to slow motion down
-                Thread.sleep(1);
+                Thread.sleep(2);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
-            repaint();
         }
 
     }
@@ -53,24 +54,29 @@ public class TimeEvolution extends JPanel {
 
     public void leapFrog(double timeStep, BinaryTree tree) {
         Particle[] particles = tree.particles;
-        //kick
+
+        //drift
         for (int i=0; i<particles.length; i++) {
             for (int dim=0; dim<particles[i].position().length; dim++) {
                 particles[i].addToPosition(dim, 0.5*timeStep*particles[i].velocity(dim));
             }
         }
 
-        //drift
+        //kick
+        tree.buildTree();
         double[] force = new double[particles[0].position().length];
         for (int i=0; i<particles.length; i++) {
+            // reset force
+            for (int j = 0; j < force.length; j++) {
+                force[j] = 0;
+            }
             interaction.calcForce(particles[i], particles, tree.root, force);
-
-            for (int dim=0; dim<particles[i].position().length; dim++) {
+            for (int dim = 0; dim < particles[i].position().length; dim++) {
                 particles[i].addToVelocity(dim, timeStep*force[dim]/particles[i].mass());
             }
         }
 
-        //kick
+        //drift
         for (int i=0; i<particles.length; i++) {
             for (int dim=0; dim<particles[i].position().length; dim++) {
                 particles[i].addToPosition(dim, 0.5*timeStep*particles[i].velocity(dim));
