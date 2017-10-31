@@ -22,8 +22,14 @@ public class Node {
      * end - inclusive last index of indices included in this node. (may not lay outside of array)
      */
     public final int start, end;
-    Node lChild, rChild;
-    Node parent;
+    public double[] centerOfGravity;
+    public double RMax;
+    public double mass;
+    public double trace;
+    public double[][] multMoment;
+    public Node lChild, rChild;
+    public Node parent;
+
 
 
     Node(double[] posMin, double[] posMax, int start, int end, Node parent, BinaryTree binaryTree) {
@@ -41,19 +47,21 @@ public class Node {
         return this == parent.lChild;
     }
 
-    boolean isLeaf() {
+    public boolean isLeaf() {
         return !(hasLeft() || hasRight());
     }
 
-    boolean hasLeft() {
+    public boolean contains(int pNumber) { return (pNumber >= start && pNumber <= end); }
+
+    public boolean hasLeft() {
         return lChild != null;
     }
 
-    boolean hasRight() {
+    public boolean hasRight() {
         return rChild != null;
     }
 
-    double dist2(double[] pos){
+    public double dist2(double[] pos){
         double dist2 = 0;
         for (int i = 0; i < pos.length; i++){
             if (pos[i] < posMin[i])
