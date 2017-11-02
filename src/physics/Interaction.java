@@ -5,10 +5,6 @@ import giant_galaxy.Particle;
 import utils.IO;
 
 public class Interaction {
-
-    // Precision factor
-    public double theta = 0.12;
-
     /**
      * Calculate updateForce on one particle from all others contained in currentNode.
      * @param particle Particle to calculate updateForce for.
@@ -16,7 +12,7 @@ public class Interaction {
      * @param currentNode Node under inspection.
      * @param force Vector for updateForce summation.
      */
-    void calcForce(Particle particle, Particle[] particles, Node currentNode, double[] force) {
+    static void calcForce(Particle particle, Particle[] particles, Node currentNode, double[] force) {
         Gravity interActionObj = new Gravity();
 
         //behaviour if particle is in own leaf
@@ -36,7 +32,7 @@ public class Interaction {
         }
 
         // no leaf, far away, thus use multipole
-        else if (theta > currentNode.RMax / particle.dist2(currentNode.centerOfGravity)) {
+        else if (TimeEvolution.THETA > currentNode.RMax / particle.dist2(currentNode.centerOfGravity)) {
             // accept multipole
             interActionObj.updateForce(particle, currentNode, force);
         }

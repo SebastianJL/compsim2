@@ -13,7 +13,6 @@ public class TimeEvolution extends JPanel {
     private static final long serialVersionUID = 1L;  //used for JPanel
 
     static BinaryTree tree;
-    static Interaction interaction;
 
     //initial conditions
     static final IGenerator RANDOM_GENERATOR = new NormalGenerator();
@@ -31,7 +30,6 @@ public class TimeEvolution extends JPanel {
         TimeEvolution timeEvolution = new TimeEvolution();
         RANDOM_GENERATOR.setSeed(RANDOM_SEED);
         tree = new BinaryTree(DIMENSIONS, N_PARTICLES, RANDOM_GENERATOR);
-        interaction = new Interaction();
 
         timeEvolution.run();
     }
@@ -83,7 +81,7 @@ public class TimeEvolution extends JPanel {
             for (int j = 0; j < force.length; j++) {
                 force[j] = 0;
             }
-            interaction.calcForce(particles[i], particles, tree.root, force);
+            Interaction.calcForce(particles[i], particles, tree.root, force);
             for (int dim = 0; dim < particles[i].position().length; dim++) {
                 particles[i].addToVelocity(dim, timeStep*force[dim]/particles[i].mass());
             }
