@@ -1,5 +1,7 @@
 package physics;
 
+import distributionGenerators.IGenerator;
+import distributionGenerators.NormalGenerator;
 import giant_galaxy.BinaryTree;
 import giant_galaxy.Particle;
 import utils.Drawing;
@@ -10,19 +12,31 @@ import java.awt.*;
 public class TimeEvolution extends JPanel {
     private static final long serialVersionUID = 1L;  //used for JPanel
 
+    static BinaryTree tree;
+    static Interaction interaction;
 
-    Interaction interaction;
-    BinaryTree tree;
+    //initial conditions
+    static final IGenerator RANDOM_GENERATOR = new NormalGenerator();
+    static final int RANDOM_SEED = 42;
+    static final int DIMENSIONS = 2;
+    static final int N_PARTICLES = (int)1e3;
 
-    public TimeEvolution(Interaction interaction, BinaryTree tree){
+    //numerical constants
+    static final double TIME_STEP = 0.00008d;
+    static final double END_TIME = 100d;
+    static final double THETA = 0.12;
+    static final int SLEEP = 20;
 
-        this.interaction = interaction;
-        this.tree = tree;
+    public static void main(String[] args) {
+        TimeEvolution timeEvolution = new TimeEvolution();
+        RANDOM_GENERATOR.setSeed(RANDOM_SEED);
+        tree = new BinaryTree(DIMENSIONS, N_PARTICLES, RANDOM_GENERATOR);
+        interaction = new Interaction();
 
-
+        timeEvolution.run();
     }
 
-    public void run(double timeStep, double endTime){
+    public void run(){
         JFrame top = new JFrame("MovingGalaxy");
         top.setBounds(0, 0, 900, 900);
         top.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -30,18 +44,17 @@ public class TimeEvolution extends JPanel {
         top.setVisible(true);
 
 
-
         double time = 0;
-        while(time<endTime){
+        while(time< END_TIME){
             for (int i = 0; i < 5; i++) {
-                leapFrog(timeStep, tree);
-                time += timeStep;
+                leapFrog(TIME_STEP, tree);
+                time += TIME_STEP;
             }
 
             repaint();
             try {
                 //wait after every calculation to slow motion down
-                Thread.sleep(2);
+                Thread.sleep(SLEEP);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

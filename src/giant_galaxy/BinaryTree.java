@@ -20,7 +20,7 @@ public class BinaryTree {
 //    int operations = 0;
 //    int partitions = 0;
 
-    BinaryTree(int dimensions, int nParticles, IGenerator randomGenerator) {
+    public BinaryTree(int dimensions, int nParticles, IGenerator randomGenerator) {
         particles = new Particle[nParticles];
         for (int i = 0; i < particles.length; i++) {
             particles[i] = new Particle(dimensions, randomGenerator);
