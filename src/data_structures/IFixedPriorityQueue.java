@@ -1,4 +1,4 @@
-package giant_galaxy;
+package data_structures;
 
 public interface IFixedPriorityQueue {
 

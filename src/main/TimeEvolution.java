@@ -1,9 +1,10 @@
-package physics;
+package main;
 
 import distributionGenerators.IGenerator;
 import distributionGenerators.NormalGenerator;
-import giant_galaxy.BinaryTree;
-import giant_galaxy.Particle;
+import data_structures.BinaryTree;
+import data_structures.Particle;
+import physics.Interaction;
 import utils.Drawing;
 
 import javax.swing.*;

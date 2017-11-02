@@ -1,4 +1,4 @@
-package giant_galaxy;
+package data_structures;
 
 import dist.BoxDist2;
 import dist.IMetric;
@@ -186,7 +186,7 @@ public class BinaryTree {
         g.setColor(Color.BLUE);
     }
 
-    void buildTreeImage(DefaultMutableTreeNode root){
+    public void buildTreeImage(DefaultMutableTreeNode root){
         this.root.buildTreeImage(root);
     }
     @SuppressWarnings("SpellCheckingInspection")

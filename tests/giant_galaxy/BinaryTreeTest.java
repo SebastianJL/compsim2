@@ -1,11 +1,9 @@
 package giant_galaxy;
 
+import data_structures.BinaryTree;
 import distributionGenerators.IGenerator;
-import distributionGenerators.NormalGenerator;
 import distributionGenerators.UniformGenerator;
 import utils.IO;
-
-import java.util.Random;
 
 class BinaryTreeTest {
 

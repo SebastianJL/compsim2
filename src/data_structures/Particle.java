@@ -1,4 +1,4 @@
-package giant_galaxy;
+package data_structures;
 
 import distributionGenerators.IGenerator;
 import utils.Drawing;

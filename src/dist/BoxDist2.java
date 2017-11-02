@@ -1,6 +1,6 @@
 package dist;
 
-import giant_galaxy.Node;
+import data_structures.Node;
 
 public class BoxDist2 implements IMetric<Node> {
 

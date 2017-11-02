@@ -1,7 +1,8 @@
 package physics;
 
-import giant_galaxy.Node;
-import giant_galaxy.Particle;
+import data_structures.Node;
+import data_structures.Particle;
+import main.TimeEvolution;
 
 public class Interaction {
     /**
@@ -11,7 +12,7 @@ public class Interaction {
      * @param currentNode Node under inspection.
      * @param force Vector for updateForce summation.
      */
-    static void calcForce(Particle particle, Particle[] particles, Node currentNode, double[] force) {
+    public static void calcForce(Particle particle, Particle[] particles, Node currentNode, double[] force) {
         Gravity interActionObj = new Gravity();
 
         //behaviour if particle is in own leaf

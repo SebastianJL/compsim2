@@ -1,7 +1,7 @@
 package physics;
 
-import giant_galaxy.Node;
-import giant_galaxy.Particle;
+import data_structures.Node;
+import data_structures.Particle;
 
 public class Gravity {
 

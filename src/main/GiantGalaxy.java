@@ -1,20 +1,15 @@
-package giant_galaxy;
+package main;
 
-import dist.BoxDist2;
-import dist.CenterOfGravityDist2;
-import dist.IMetric;
 import distributionGenerators.IGenerator;
 import distributionGenerators.NormalGenerator;
-import distributionGenerators.UniformGenerator;
+import data_structures.BinaryTree;
+import data_structures.IFixedPriorityQueue;
 import physics.Interaction;
-import physics.TimeEvolution;
 import utils.Drawing;
-import utils.IO;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
-import java.util.Random;
 
 @SuppressWarnings("SpellCheckingInspection")
 class GiantGalaxy extends JPanel {
