@@ -10,7 +10,7 @@ public class LinearFixedPriorityQueue implements IFixedPriorityQueue {
     private double[] r2List;  // distance squared between indices and positions.
     private int r2Max; // Index of maximal r2 in r2List.
 
-    LinearFixedPriorityQueue(int size) {
+    public LinearFixedPriorityQueue(int size) {
         indices = new int[size];
         r2List = new double[size];
         r2Max = 0;

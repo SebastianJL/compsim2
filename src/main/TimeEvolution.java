@@ -24,7 +24,7 @@ public class TimeEvolution extends JPanel {
     //numerical constants
     static final double TIME_STEP = 0.00008d;
     static final double END_TIME = 100d;
-    static final double THETA = 0.12;
+    public static final double THETA = 0.12;
     static final int SLEEP = 20;
 
     public static void main(String[] args) {
