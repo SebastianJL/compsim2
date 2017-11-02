@@ -1,9 +1,6 @@
 package dist;
 
 import giant_galaxy.Node;
-import giant_galaxy.Particle;
-
-import java.util.Arrays;
 
 public class CenterOfGravityDist2 implements IMetric<Node>{
 
@@ -19,7 +16,7 @@ public class CenterOfGravityDist2 implements IMetric<Node>{
     public double metric(double[] pos, Node node) {
         double dist2 = 0;
 
-        double[] centGrav  = node.centerOfGravity;
+        double[] centGrav  = node.centerOfMass;
         for(int i=0; i<node.tree.dimensions(); i++){
             dist2 += Math.pow(pos[i]-centGrav[i],2);
         }

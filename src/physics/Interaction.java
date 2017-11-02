@@ -2,7 +2,6 @@ package physics;
 
 import giant_galaxy.Node;
 import giant_galaxy.Particle;
-import utils.IO;
 
 public class Interaction {
     /**
@@ -32,7 +31,7 @@ public class Interaction {
         }
 
         // no leaf, far away, thus use multipole
-        else if (TimeEvolution.THETA > currentNode.RMax / particle.dist2(currentNode.centerOfGravity)) {
+        else if (TimeEvolution.THETA > currentNode.RMax / particle.dist2(currentNode.centerOfMass)) {
             // accept multipole
             interActionObj.updateForce(particle, currentNode, force);
         }

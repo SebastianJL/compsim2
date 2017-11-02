@@ -22,7 +22,7 @@ public class Node {
      * end - inclusive last index of indices included in this node. (may not lay outside of array)
      */
     public final int start, end;
-    public double[] centerOfGravity;
+    public double[] centerOfMass;
     public double RMax;
     public double mass;
     public double trace;
@@ -147,7 +147,7 @@ public class Node {
     }
 
 
-    public static double[] centerOfGravity(Particle[] particles, int dimensions){
+    public static double[] centerOfMass(Particle[] particles, int dimensions){
         double[] centGrav = new double[dimensions];
         double mTot = mass(particles);
         for(int i=0; i<dimensions; i++){
@@ -159,28 +159,28 @@ public class Node {
         return centGrav;
     }
 
-    public static double[] CombinedCenterOfGravity
-            (double lMass, double rMass, double[] lCoG, double[] rCoG){
-        double[] CCoG = new double[lCoG.length];
-        for(int i=0; i < CCoG.length; i++){
-            CCoG[i] = (lMass*lCoG[i]+rMass*rCoG[i])/(lMass+rMass);
+    public static double[] CombinedCenterOfMass
+            (double lMass, double rMass, double[] lCoM, double[] rCoM){
+        double[] CCoM = new double[lCoM.length];
+        for(int i=0; i < CCoM.length; i++){
+            CCoM[i] = (lMass*lCoM[i]+rMass*rCoM[i])/(lMass+rMass);
         }
-        return CCoG; //Attention: wrong definition of CoG
+        return CCoM; //Attention: wrong definition of CoM
     }
 
-    public static double RMaxFromCoG(double[] centerOfGravity, Particle[] particles){
-        double RMaxFromCoG = 0;
+    public static double RMaxFromCoM(double[] centerOfMass, Particle[] particles){
+        double RMaxFromCoM = 0;
         for(int i=0; i<particles.length; i++){
-            if(particles[i].dist2(centerOfGravity)>RMaxFromCoG){
-                RMaxFromCoG = particles[i].dist2(centerOfGravity);
+            if(particles[i].dist2(centerOfMass)>RMaxFromCoM){
+                RMaxFromCoM = particles[i].dist2(centerOfMass);
             }
         }
-        return RMaxFromCoG;
+        return RMaxFromCoM;
     }
 
-    public static double CombinedRMaxFromCombinedCoG(double[] lCenterOfGravity, double[] rCenterOfGravity, double[] CombinedCoG, double LRMax, double RRMax){
-        double lDistance  = pythaDist2(lCenterOfGravity, CombinedCoG);
-        double rDistance  = pythaDist2(rCenterOfGravity, CombinedCoG);
+    public static double CombinedRMaxFromCombinedCoM(double[] lCenterOfMass, double[] rCenterOfMass, double[] CombinedCoM, double LRMax, double RRMax){
+        double lDistance  = pythaDist2(lCenterOfMass, CombinedCoM);
+        double rDistance  = pythaDist2(rCenterOfMass, CombinedCoM);
 
         if(lDistance>rDistance){
             return lDistance+LRMax;
@@ -190,12 +190,12 @@ public class Node {
         }
     }
 
-    public static double[][] multiPoleM(Particle[] particles, double[] CoG){
-        double[][] multiPoleM = new double[CoG.length][CoG.length];
+    public static double[][] multiPoleM(Particle[] particles, double[] CoM){
+        double[][] multiPoleM = new double[CoM.length][CoM.length];
         for (Particle particle : particles) {
-            for(int j=0; j < CoG.length; j++){
-                for(int k=j; k < CoG.length; k++){
-                    multiPoleM[j][k] += particle.mass()*(particle.position(j)-CoG[j])*(particle.position(k)-CoG[k]);
+            for(int j=0; j < CoM.length; j++){
+                for(int k=j; k < CoM.length; k++){
+                    multiPoleM[j][k] += particle.mass()*(particle.position(j)-CoM[j])*(particle.position(k)-CoM[k]);
                     multiPoleM[k][j] = multiPoleM[j][k];
                 }
             }
@@ -204,17 +204,17 @@ public class Node {
         return multiPoleM;
     }
 
-    public static double[][] combMultiPoleM(double lMass, double[] lCoG, double[][] lMultiPoleM, double rMass, double[] rCoG, double[][] rMultiPoleM, double[] CoG) {
-        double[][] combMultiPoleM = new double[CoG.length][CoG.length];
+    public static double[][] combMultiPoleM(double lMass, double[] lCoM, double[][] lMultiPoleM, double rMass, double[] rCoM, double[][] rMultiPoleM, double[] CoM) {
+        double[][] combMultiPoleM = new double[CoM.length][CoM.length];
         double S_jk = 0;
-        for(int j=0; j < CoG.length; j++){
-            for(int k=j; k < CoG.length; k++){
+        for(int j=0; j < CoM.length; j++){
+            for(int k=j; k < CoM.length; k++){
                 //left
-                S_jk = (lCoG[j]-CoG[j])*(lCoG[k]-CoG[k]);
+                S_jk = (lCoM[j]-CoM[j])*(lCoM[k]-CoM[k]);
                 combMultiPoleM[j][k] = S_jk*lMass-lMultiPoleM[j][k];
 
                 //right
-                S_jk = (rCoG[j]-CoG[j])*(rCoG[k]-CoG[k]);
+                S_jk = (rCoM[j]-CoM[j])*(rCoM[k]-CoM[k]);
                 combMultiPoleM[j][k] += S_jk*rMass-rMultiPoleM[j][k];
 
                 //symmetric!

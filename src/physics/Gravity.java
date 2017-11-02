@@ -2,7 +2,6 @@ package physics;
 
 import giant_galaxy.Node;
 import giant_galaxy.Particle;
-import utils.IO;
 
 public class Gravity {
 
@@ -18,8 +17,8 @@ public class Gravity {
     }
 
     void updateForce(Particle particle1, Node node, double[] force){
-        double[] r = particle1.vect(node.centerOfGravity);
-        double dist = particle1.dist(node.centerOfGravity, 1);
+        double[] r = particle1.vect(node.centerOfMass);
+        double dist = particle1.dist(node.centerOfMass, 1);
         double dist3 = Math.pow(dist, 3);
         double dist5 = Math.pow(dist, 5);
         double dist7 = Math.pow(dist, 7);
