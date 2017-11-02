@@ -90,9 +90,9 @@ public class BinaryTree {
             for (Particle nodeParticle : nodeParticles) {
                 nodeParticle.index = j++;
             }
-            currentNode.mass = Node.mass(nodeParticles);
+            currentNode.mass = Node.mass(currentNode);
             currentNode.centerOfMass = Node.centerOfMass
-                    (nodeParticles,dimensions());
+                    (currentNode);
             currentNode.RMax = Node.RMaxFromCoM(currentNode.centerOfMass, nodeParticles);
             currentNode.multMoment = Node.multiPoleM(nodeParticles, currentNode.centerOfMass);
             return;

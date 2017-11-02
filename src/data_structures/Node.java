@@ -130,28 +130,34 @@ public class Node {
         }
     }
 
-    public static double mass(Particle[] particles){
+    /**
+     * Calculate total mass of node.
+     * @param node Node to calculate mass for.
+     * @return Total mass
+     */
+    public static double mass(Node node){
         double mTot  = 0;
-        for(int j=0; j<particles.length; j++) {
-            mTot += particles[j].mass();
+        for(int j = node.start; j <= node.end; j++) {
+            mTot += node.tree.particles[j].mass();
         }
         return mTot;
     }
 
     public static double pythaDist2(double[] pos1, double[] pos2){
         double pythaDist2 = 0;
-        for (int i=0; i<pos1.length; i++) {
+        for (int i = 0; i < pos1.length; i++) {
             pythaDist2 += Math.pow( pos1[i]-pos2[i], 2);
         }
         return pythaDist2;
     }
 
 
-    public static double[] centerOfMass(Particle[] particles, int dimensions){
-        double[] centGrav = new double[dimensions];
-        double mTot = mass(particles);
-        for(int i=0; i<dimensions; i++){
-            for(int j=0; j<particles.length; j++){
+    public static double[] centerOfMass(Node node){
+        double[] centGrav = new double[node.tree.dimensions()];
+        Particle[] particles = node.tree.particles;
+        double mTot = mass(node);
+        for(int i=0; i < node.tree.dimensions(); i++){
+            for(int j = node.start; j <= node.end; j++){
                 centGrav[i] += particles[j].mass()*particles[j].position(i);
             }
             centGrav[i] /= mTot*particles.length;
