@@ -1,4 +1,4 @@
-package giant_galaxy;
+package main;
 
 import data_structures.BinaryTree;
 import distributionGenerators.IGenerator;

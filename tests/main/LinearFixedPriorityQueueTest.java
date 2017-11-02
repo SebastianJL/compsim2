@@ -1,4 +1,4 @@
-package giant_galaxy;
+package main;
 
 import data_structures.LinearFixedPriorityQueue;
 import org.junit.jupiter.api.Test;
