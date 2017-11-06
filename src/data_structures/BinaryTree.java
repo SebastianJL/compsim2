@@ -18,10 +18,10 @@ public class BinaryTree {
 //    int operations = 0;
 //    int partitions = 0;
 
-    public BinaryTree(int dimensions, int nParticles, IGenerator randomGenerator) {
+    public BinaryTree(int dimensions, int nParticles, IGenerator randomGeneratorPosition, IGenerator randomGeneratorVelocity) {
         particles = new Particle[nParticles];
         for (int i = 0; i < particles.length; i++) {
-            particles[i] = new Particle(dimensions, randomGenerator);
+            particles[i] = new Particle(dimensions, randomGeneratorPosition, randomGeneratorVelocity);
         }
         double[] posMin = new double[dimensions];
         double[] posMax = new double[dimensions];

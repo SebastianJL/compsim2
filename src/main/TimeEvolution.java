@@ -16,10 +16,12 @@ public class TimeEvolution extends JPanel {
     static BinaryTree tree;
 
     //initial conditions
-    static final IGenerator RANDOM_GENERATOR = new NormalGenerator();
-    static final int RANDOM_SEED = 42;
+    static final IGenerator RANDOM_GENERATOR_POS = new NormalGenerator(0.5, 0.05);
+    static final int RANDOM_SEED_POS = 42;
+    static final IGenerator RANDOM_GENERATOR_VEL = new NormalGenerator(0,0.01);
+    static final int RANDOM_SEED_VEL = 18;
     static final int DIMENSIONS = 2;
-    static final int N_PARTICLES = (int)1e3;
+    static final int N_PARTICLES = (int)1e2;
 
     //numerical constants
     static final double TIME_STEP = 0.00008d;
@@ -29,8 +31,10 @@ public class TimeEvolution extends JPanel {
 
     public static void main(String[] args) {
         TimeEvolution timeEvolution = new TimeEvolution();
-        RANDOM_GENERATOR.setSeed(RANDOM_SEED);
-        tree = new BinaryTree(DIMENSIONS, N_PARTICLES, RANDOM_GENERATOR);
+        RANDOM_GENERATOR_POS.setSeed(RANDOM_SEED_POS);
+        RANDOM_GENERATOR_VEL.setSeed(RANDOM_SEED_VEL);
+
+        tree = new BinaryTree(DIMENSIONS, N_PARTICLES, RANDOM_GENERATOR_POS, RANDOM_GENERATOR_VEL);
 
         timeEvolution.run();
     }

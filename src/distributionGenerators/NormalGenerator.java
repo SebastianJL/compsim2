@@ -22,14 +22,27 @@ public class NormalGenerator extends Random implements IGenerator{
     }
 
 
-    @Override
-    public double next(){
+    public double nextPos(){
         double rValue = nextGaussian()*standardDev+mean;
         if(rValue > 0 && rValue < 1){
             return rValue;
         }
         else{
-            return next();
+            return nextPos();
+        }
+    }
+
+    public double nextVel(){
+        return nextGaussian()*standardDev+mean;
+    }
+
+    public int nextDirection(){
+        boolean bool = nextBoolean();
+        if(bool==true){
+            return 1;
+        }
+        else{
+            return -1;
         }
     }
 }

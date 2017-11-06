@@ -1,6 +1,8 @@
 package distributionGenerators;
 
 public interface IGenerator {
-    double next();
+    double nextPos();
+    double nextVel();
+    int nextDirection();
     void setSeed(long i);
 }

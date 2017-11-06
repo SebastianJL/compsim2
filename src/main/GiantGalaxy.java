@@ -36,11 +36,13 @@ class GiantGalaxy extends JPanel {
     }
 
     private void run() {
-        IGenerator randomGenerator = new NormalGenerator();
-        randomGenerator.setSeed(10);
+        IGenerator randomGenerator1 = new NormalGenerator();
+        randomGenerator1.setSeed(10);
+        IGenerator randomGenerator2 = new NormalGenerator();
+        randomGenerator2.setSeed(12);
 
         Interaction interaction = new Interaction();
-        tree = new BinaryTree(2, (int) 1e2, randomGenerator);
+        tree = new BinaryTree(2, (int) 1e2, randomGenerator1, randomGenerator2);
 
 
 //        int nParticlesInRMax = tree.ballwalk(ballwalkCenter, rMax);

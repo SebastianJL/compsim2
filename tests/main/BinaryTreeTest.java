@@ -24,7 +24,7 @@ class BinaryTreeTest {
         double[] operations = new double[modulo];
 
         for (int i = 0; i < nSimulations; i++) {
-            BinaryTree tree = new BinaryTree(2, (int) nParticles[i%modulo], randomGenerator);
+            BinaryTree tree = new BinaryTree(2, (int) nParticles[i%modulo], randomGenerator, randomGenerator);
 //            swaps[i%modulo] += tree.swaps;
 //            comparisons[i%modulo] += tree.comparisons;
 //            partitions[i%modulo] += tree.partitions;

@@ -5,7 +5,6 @@ import utils.Drawing;
 import utils.IO;
 
 import java.awt.*;
-import java.util.Random;
 
 public class Particle {
     private double[] position;
@@ -15,14 +14,28 @@ public class Particle {
 
     public int index; // describes particle index in particles array of binarytree when isBuilt==true
 
-    Particle(int dimensions, IGenerator randomGenerator) {
-        this.position = new double[dimensions];
-
-        for (int i = 0; i < position.length; i++) {
-            position[i] = randomGenerator.next();
-        }
+    Particle(int dimensions, IGenerator randomGeneratorPosition, IGenerator randomGeneratorVelocity) {
+        //mass
         mass = 1;
-        this.velocity = new double[dimensions()];
+        //position
+        this.position = new double[dimensions];
+        for (int i = 0; i < position.length; i++) {
+            position[i] = randomGeneratorPosition.nextPos();
+        }
+        //velocity
+        this.velocity = new double[dimensions];
+        double speedFactor = 15;
+        double posVel;
+        for (int i = 0; i < velocity.length; i++) {
+            if(position[i] <= 0.5){
+                posVel = position[i];
+            }
+            else{
+                posVel = 1-position[i];
+            }
+            IO.print(randomGeneratorVelocity.nextVel());
+            velocity[i] = speedFactor*randomGeneratorVelocity.nextDirection()*(posVel+(randomGeneratorVelocity.nextVel()));
+        }
 
     }
 
