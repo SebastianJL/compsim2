@@ -195,7 +195,7 @@ public class Node {
         }
     }
 
-    public static double[][] multiPoleM(double[] CoM, Node node) {
+    public static double[][] multipoleMoment(double[] CoM, Node node) {
         double[][] multiPoleM = new double[CoM.length][CoM.length];
         Particle[] particles = node.tree.particles;
         for (int i=node.start; i<= node.end; i++) {

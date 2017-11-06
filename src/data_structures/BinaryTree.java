@@ -6,7 +6,6 @@ import distributionGenerators.IGenerator;
 import utils.Array;
 
 import java.awt.*;
-import java.util.Arrays;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class BinaryTree {
@@ -81,19 +80,14 @@ public class BinaryTree {
      */
     @SuppressWarnings("UnnecessaryLocalVariable")
     public void buildTree(int dimension, Node currentNode) {
-
-        //Particle array slicing
-//        Particle[] nodeParticles = Arrays.copyOfRange(particles, currentNode.start, currentNode.end);
-
         if (currentNode.end - currentNode.start < 8) {
             for (int j = currentNode.start; j <= currentNode.end; j++) {
                 particles[j].index = j;
             }
             currentNode.mass = Node.mass(currentNode);
-            currentNode.centerOfMass = Node.centerOfMass
-                    (currentNode);
+            currentNode.centerOfMass = Node.centerOfMass(currentNode);
             currentNode.RMax = Node.RMaxFromCoM(currentNode.centerOfMass, currentNode);
-            currentNode.multMoment = Node.multiPoleM(currentNode.centerOfMass, currentNode);
+            currentNode.multMoment = Node.multipoleMoment(currentNode.centerOfMass, currentNode);
             return;
         }
 
@@ -129,12 +123,13 @@ public class BinaryTree {
         if(currentNode.hasLeft() && currentNode.hasRight()){
             currentNode.mass = currentNode.lChild.mass + currentNode.rChild.mass;
             currentNode.centerOfMass = Node.CombinedCenterOfMass(currentNode.lChild.mass, currentNode.rChild.mass,
-                            currentNode.lChild.centerOfMass, currentNode.rChild.centerOfMass);
-            currentNode.RMax = Node.CombinedRMaxFromCombinedCoM
-                    (currentNode.lChild.centerOfMass, currentNode.rChild.centerOfMass,
-                            currentNode.centerOfMass, currentNode.lChild.RMax, currentNode.rChild.RMax);
-            currentNode.multMoment = Node.combMultiPoleM(currentNode.lChild.mass, currentNode.lChild.centerOfMass,currentNode.lChild.multMoment,
-                    currentNode.rChild.mass, currentNode.rChild.centerOfMass, currentNode.rChild.multMoment,currentNode.centerOfMass);
+                    currentNode.lChild.centerOfMass, currentNode.rChild.centerOfMass);
+            currentNode.RMax = Node.CombinedRMaxFromCombinedCoM(currentNode.lChild.centerOfMass,
+                    currentNode.rChild.centerOfMass, currentNode.centerOfMass, currentNode.lChild.RMax,
+                    currentNode.rChild.RMax);
+            currentNode.multMoment = Node.combMultiPoleM(currentNode.lChild.mass, currentNode.lChild.centerOfMass,
+                    currentNode.lChild.multMoment, currentNode.rChild.mass, currentNode.rChild.centerOfMass,
+                    currentNode.rChild.multMoment, currentNode.centerOfMass);
             currentNode.trace = Node.trace(currentNode.multMoment);
         }
         else if(currentNode.hasRight()){
