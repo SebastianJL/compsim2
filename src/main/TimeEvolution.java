@@ -112,7 +112,6 @@ public class TimeEvolution extends JPanel {
             g.setColor(Color.BLACK);
             tree.paint(g, scale);
         }
-
         Toolkit.getDefaultToolkit().sync();
     }
 

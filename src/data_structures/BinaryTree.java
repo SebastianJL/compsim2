@@ -83,18 +83,17 @@ public class BinaryTree {
     public void buildTree(int dimension, Node currentNode) {
 
         //Particle array slicing
-        Particle[] nodeParticles = Arrays.copyOfRange(particles, currentNode.start, currentNode.end);
+//        Particle[] nodeParticles = Arrays.copyOfRange(particles, currentNode.start, currentNode.end);
 
         if (currentNode.end - currentNode.start < 8) {
-            int j = currentNode.start;
-            for (Particle nodeParticle : nodeParticles) {
-                nodeParticle.index = j++;
+            for (int j = currentNode.start; j <= currentNode.end; j++) {
+                particles[j].index = j;
             }
             currentNode.mass = Node.mass(currentNode);
             currentNode.centerOfMass = Node.centerOfMass
                     (currentNode);
-            currentNode.RMax = Node.RMaxFromCoM(currentNode.centerOfMass, nodeParticles);
-            currentNode.multMoment = Node.multiPoleM(nodeParticles, currentNode.centerOfMass);
+            currentNode.RMax = Node.RMaxFromCoM(currentNode.centerOfMass, currentNode);
+            currentNode.multMoment = Node.multiPoleM(currentNode.centerOfMass, currentNode);
             return;
         }
 
@@ -129,8 +128,7 @@ public class BinaryTree {
         // Going up again. Fill gravity stuff
         if(currentNode.hasLeft() && currentNode.hasRight()){
             currentNode.mass = currentNode.lChild.mass + currentNode.rChild.mass;
-            currentNode.centerOfMass = Node.CombinedCenterOfMass
-                    (currentNode.lChild.mass, currentNode.rChild.mass,
+            currentNode.centerOfMass = Node.CombinedCenterOfMass(currentNode.lChild.mass, currentNode.rChild.mass,
                             currentNode.lChild.centerOfMass, currentNode.rChild.centerOfMass);
             currentNode.RMax = Node.CombinedRMaxFromCombinedCoM
                     (currentNode.lChild.centerOfMass, currentNode.rChild.centerOfMass,

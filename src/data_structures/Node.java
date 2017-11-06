@@ -165,8 +165,7 @@ public class Node {
         return centGrav;
     }
 
-    public static double[] CombinedCenterOfMass
-            (double lMass, double rMass, double[] lCoM, double[] rCoM){
+    public static double[] CombinedCenterOfMass(double lMass, double rMass, double[] lCoM, double[] rCoM) {
         double[] CCoM = new double[lCoM.length];
         for(int i=0; i < CCoM.length; i++){
             CCoM[i] = (lMass*lCoM[i]+rMass*rCoM[i])/(lMass+rMass);
@@ -174,11 +173,11 @@ public class Node {
         return CCoM; //Attention: wrong definition of CoM
     }
 
-    public static double RMaxFromCoM(double[] centerOfMass, Particle[] particles){
+    public static double RMaxFromCoM(double[] centerOfMass, Node node){
         double RMaxFromCoM = 0;
-        for(int i=0; i<particles.length; i++){
-            if(particles[i].dist2(centerOfMass)>RMaxFromCoM){
-                RMaxFromCoM = particles[i].dist2(centerOfMass);
+        for(int i = node.start; i <= node.end; i++){
+            if(node.tree.particles[i].dist2(centerOfMass)>RMaxFromCoM){
+                RMaxFromCoM = node.tree.particles[i].dist2(centerOfMass);
             }
         }
         return RMaxFromCoM;
@@ -196,12 +195,13 @@ public class Node {
         }
     }
 
-    public static double[][] multiPoleM(Particle[] particles, double[] CoM){
+    public static double[][] multiPoleM(double[] CoM, Node node) {
         double[][] multiPoleM = new double[CoM.length][CoM.length];
-        for (Particle particle : particles) {
+        Particle[] particles = node.tree.particles;
+        for (int i=node.start; i<= node.end; i++) {
             for(int j=0; j < CoM.length; j++){
                 for(int k=j; k < CoM.length; k++){
-                    multiPoleM[j][k] += particle.mass()*(particle.position(j)-CoM[j])*(particle.position(k)-CoM[k]);
+                    multiPoleM[j][k] += particles[i].mass()*(particles[i].position(j)-CoM[j])*(particles[i].position(k)-CoM[k]);
                     multiPoleM[k][j] = multiPoleM[j][k];
                 }
             }
@@ -210,7 +210,8 @@ public class Node {
         return multiPoleM;
     }
 
-    public static double[][] combMultiPoleM(double lMass, double[] lCoM, double[][] lMultiPoleM, double rMass, double[] rCoM, double[][] rMultiPoleM, double[] CoM) {
+    public static double[][] combMultiPoleM(double lMass, double[] lCoM, double[][] lMultiPoleM, double rMass,
+                                            double[] rCoM, double[][] rMultiPoleM, double[] CoM) {
         double[][] combMultiPoleM = new double[CoM.length][CoM.length];
         double S_jk = 0;
         for(int j=0; j < CoM.length; j++){
